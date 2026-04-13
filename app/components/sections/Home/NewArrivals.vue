@@ -89,7 +89,7 @@ const decQty = () => {
         class="min-w-[260px] group cursor-pointer"
       >
         <div class="relative overflow-hidden">
-          <NuxtImg
+          <img
             :src="p.image"
             class="w-full h-[360px] object-cover transition duration-700 group-hover:scale-105"
           />
@@ -137,11 +137,11 @@ const decQty = () => {
 
             <!-- LEFT IMAGES -->
             <div class="p-6 grid grid-cols-2 gap-4">
-              <NuxtImg
+              <img
                 :src="selectedProduct.image"
                 class="col-span-2 w-full h-[420px] object-cover"
               />
-              <NuxtImg
+              <img
                 v-for="i in 3"
                 :key="i"
                 :src="selectedProduct.image"
