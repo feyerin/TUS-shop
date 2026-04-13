@@ -54,7 +54,7 @@ onUnmounted(() => {
         ]"
       >
         <!-- IMAGE -->
-        <NuxtImg
+        <img
           :src="slide.image"
           class="w-full h-full object-cover"
         />

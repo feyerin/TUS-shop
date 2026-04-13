@@ -117,7 +117,7 @@ const toggleMobileMenu = (index: number) => {
       <!-- LOGO -->
       <div class="flex justify-center">
         <NuxtLink to="/">
-          <NuxtImg
+          <img
             src="https://loveandflair.com/cdn/shop/files/LFLOGO_NEW-05_e8af3c6c-d2d5-45b6-8c0b-48c2140a3f31_150x@2x.png"
             class="h-5 md:h-6"
           />

@@ -33,7 +33,7 @@ const products = [
 
       <!-- BIG IMAGE -->
       <div ref="p1.el" class="md:col-span-3 overflow-hidden h-[700px]">
-        <NuxtImg
+        <img
           src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d"
           class="w-full h-[120%] object-cover will-change-transform"
           :style="{
@@ -46,7 +46,7 @@ const products = [
       <!-- TOP RIGHT -->
       <div class="md:col-span-2 md:translate-y-20 group cursor-pointer">
         <div ref="p2.el" class="overflow-hidden h-[420px]">
-          <NuxtImg
+          <img
             :src="products[0]?.image"
             class="w-full h-[120%] object-cover will-change-transform transition duration-500 group-hover:scale-105"
             :style="{
@@ -78,7 +78,7 @@ const products = [
       <!-- BOTTOM LEFT -->
       <div class="md:col-span-2 md:-translate-y-16 group cursor-pointer">
         <div ref="p3.el" class="overflow-hidden h-[350px]">
-          <NuxtImg
+          <img
             :src="products[1]?.image"
             class="w-full h-[120%] object-cover will-change-transform transition duration-500 group-hover:scale-105"
             :style="{
@@ -97,7 +97,7 @@ const products = [
 
       <!-- CENTER STATIC -->
       <div class="md:col-span-2 group overflow-hidden">
-        <NuxtImg
+        <img
           src="https://loveandflair.com/cdn/shop/files/Screenshot_2026-03-30_at_10.13.30.png"
           class="w-full h-[500px] object-cover transition duration-[4000ms] group-hover:scale-105"
         />
@@ -105,7 +105,7 @@ const products = [
 
       <!-- BOTTOM RIGHT -->
       <div class="md:col-span-2 md:translate-y-10 group cursor-pointer">
-        <NuxtImg
+        <img
           :src="products[2]?.image"
           class="w-full h-[350px] object-cover mb-4 transition duration-700 group-hover:scale-105"
         />

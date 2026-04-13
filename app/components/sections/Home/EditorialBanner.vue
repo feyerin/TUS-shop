@@ -14,7 +14,7 @@ const props = defineProps<{
       <div class="relative group overflow-hidden">
 
         <!-- IMAGE -->
-        <NuxtImg
+        <img
           :src="image"
           class="w-full h-[600px] object-cover transition duration-[4000ms] ease-out group-hover:scale-105"
         />

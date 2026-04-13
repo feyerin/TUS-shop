@@ -35,7 +35,7 @@ const formatPrice = (price: number) => {
         SOLD OUT
       </div>
 
-      <NuxtImg
+      <img
         :src="image"
         :alt="name"
         class="w-full h-[420px] object-cover transition duration-700 group-hover:scale-105"

@@ -37,7 +37,7 @@ const featured = [
 
         <!-- IMAGE -->
         <div class="overflow-hidden mb-6">
-          <NuxtImg
+          <img
             :src="item.image"
             class="w-full h-[420px] object-cover transition duration-700 group-hover:scale-105"
           />

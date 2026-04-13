@@ -13,7 +13,7 @@ defineProps<{
     class="relative group cursor-pointer overflow-hidden block"
   >
     <!-- IMAGE -->
-    <NuxtImg
+    <img
       :src="image"
       class="w-full h-[420px] object-cover transition duration-700 group-hover:scale-110"
     />

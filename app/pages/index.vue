@@ -72,7 +72,7 @@ const collections = [
 
     <section class="py-24">
       <div class="relative h-[500px]">
-        <NuxtImg
+        <img
           src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d"
           class="w-full h-full object-cover"
         />
@@ -96,7 +96,7 @@ const collections = [
       </h2>
 
       <div class="grid grid-cols-2 md:grid-cols-6 gap-2">
-        <NuxtImg v-for="i in 6" :key="i"
+        <img v-for="i in 6" :key="i"
           src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d"
           class="w-full h-[150px] object-cover"
         />
