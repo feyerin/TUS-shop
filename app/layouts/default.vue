@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="relative">
     <LayoutNavbar />
 
-    <main>
+    <main class="relative z-0">
       <slot />
     </main>
 

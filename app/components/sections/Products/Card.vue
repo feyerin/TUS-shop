@@ -8,7 +8,7 @@ withDefaults(
     brand?: string
   }>(),
   {
-    brand: "LOVE AND FLAIR"
+    brand: "THE UNDERWEAR SUPPLY"
   }
 )
 
@@ -22,45 +22,47 @@ const formatPrice = (price: number) => {
 </script>
 
 <template>
-  <div class="group cursor-pointer">
-    
-    <!-- IMAGE -->
-    <div class="relative mb-4 overflow-hidden bg-gray-100">
+  <NuxtLink :to="`/products/${name}`">
+    <div class="group cursor-pointer">
       
-      <!-- SOLD OUT -->
-      <div
-        v-if="soldOut"
-        class="absolute top-3 left-3 bg-black text-white text-[10px] tracking-widest px-3 py-1 z-10"
-      >
-        SOLD OUT
+      <!-- IMAGE -->
+      <div class="relative mb-4 overflow-hidden bg-gray-100">
+        
+        <!-- SOLD OUT -->
+        <div
+          v-if="soldOut"
+          class="absolute top-3 left-3 bg-black text-white text-[10px] tracking-widest px-3 py-1 z-10"
+        >
+          SOLD OUT
+        </div>
+
+        <img
+          :src="image"
+          :alt="name"
+          class="w-full h-[420px] object-cover transition duration-700 group-hover:scale-105"
+        />
+
+        <!-- subtle overlay hover -->
+        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition" />
       </div>
 
-      <img
-        :src="image"
-        :alt="name"
-        class="w-full h-[420px] object-cover transition duration-700 group-hover:scale-105"
-      />
+      <!-- INFO -->
+      <div class="space-y-1">
+        
+        <p class="text-[11px] tracking-[0.2em] text-gray-400">
+          {{ brand }}
+        </p>
 
-      <!-- subtle overlay hover -->
-      <div class="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition" />
-    </div>
+        <h3 class="text-sm leading-snug">
+          {{ name }}
+        </h3>
 
-    <!-- INFO -->
-    <div class="space-y-1">
-      
-      <p class="text-[11px] tracking-[0.2em] text-gray-400">
-        {{ brand }}
-      </p>
+        <p class="text-sm text-gray-600">
+          {{ formatPrice(price) }}
+        </p>
 
-      <h3 class="text-sm leading-snug">
-        {{ name }}
-      </h3>
-
-      <p class="text-sm text-gray-600">
-        {{ formatPrice(price) }}
-      </p>
+      </div>
 
     </div>
-
-  </div>
+  </NuxtLink>
 </template>

@@ -1,32 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue"
-
-const products = [
-  {
-    id: 1,
-    name: "Pleated Skirt",
-    price: "IDR 899.000",
-    image: "https://loveandflair.com/cdn/shop/files/LF-157_14b48dc6-2a4a-466f-bfa9-ddfd99a890ed.jpg?v=1772680575&width=1200"
-  },
-  {
-    id: 2,
-    name: "Minimal Dress",
-    price: "IDR 1.299.000",
-    image: "https://loveandflair.com/cdn/shop/files/LF-153_14554004-320f-4e6b-af12-928f87e83607.jpg?v=1772680587&width=1200"
-  },
-  {
-    id: 3,
-    name: "Soft Blouse",
-    price: "IDR 799.000",
-    image: "https://loveandflair.com/cdn/shop/files/LF-136_db99e3c7-06fc-4cf9-ad46-8538d7672f12.jpg?v=1772680545&width=1200"
-  },
-  {
-    id: 4,
-    name: "Wide Pants",
-    price: "IDR 1.099.000",
-    image: "https://loveandflair.com/cdn/shop/files/LF-7_a7020aee-7eb2-473e-af8f-4ccd7730df21.jpg?v=1774410913&width=1200"
-  }
-]
+import { products } from "../../../../data/products"
 
 const slider = ref<HTMLElement | null>(null)
 const selectedProduct = ref<any>(null)
@@ -63,7 +37,7 @@ const decQty = () => {
     <!-- HEADER -->
     <div class="flex items-end justify-between mb-8 md:mb-12">
       <h2 class="text-[36px] md:text-[64px] leading-tight tracking-tight">
-        New <span class="italic font-light">Arrivals</span>
+        New <span class="italic font-light font-secondary">Arrivals</span>
       </h2>
 
       <div class="flex items-center gap-4">

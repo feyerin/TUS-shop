@@ -64,7 +64,7 @@ const year = new Date().getFullYear()
       <div class="max-w-7xl mx-auto flex justify-between items-center text-sm text-white/60">
         
         <p>
-          © Copyright, LOVE AND FLAIR, {{ year }}
+          © Copyright, THE UNDERWEAR SUPPLY, {{ year }}
         </p>
 
         <div class="flex gap-4">

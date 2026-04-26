@@ -10,11 +10,16 @@
   },
   "dependencies": {
     "@nuxt/content": "^3.12.0",
+    "@nuxt/icon": "^2.2.1",
     "@nuxt/image": "^2.0.0",
+    "@vueuse/core": "^14.2.1",
     "better-sqlite3": "^12.8.0",
     "nuxt": "^4.4.2"
   },
   "devDependencies": {
-    "@nuxtjs/tailwindcss": "^6.14.0"
+    "@nuxtjs/tailwindcss": "^6.14.0",
+    "nuxt-icon": "^1.0.0-beta.7",
+    "unplugin-auto-import": "^21.0.0",
+    "unplugin-icons": "^23.0.1"
   }
 }

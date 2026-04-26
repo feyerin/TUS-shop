@@ -21,12 +21,16 @@ onUnmounted(() => {
   window.removeEventListener("scroll", handleScroll)
 })
 
+const transparentRoutes = ["/", "/account/login"]
+
 const isActive = computed(() => {
-  return (
-    isScrolled.value ||
-    activeMenu.value !== null ||
-    route.path !== "/"
-  )
+  const isTransparentPage = transparentRoutes.includes(route.path)
+
+  if (isTransparentPage) {
+    return isScrolled.value || activeMenu.value !== null
+  }
+
+  return true
 })
 
 const menu = [
@@ -60,16 +64,16 @@ const menu = [
       }
     ]
   },
-  { 
-    name: "BRAND", 
+  {
+    name: "BRAND",
     link: "/collections",
     children: [
       {
-        title: "TOPS",
+        title: "BRANDS",
         items: [
           { name: "NIKE", link: "/collections/NIKE" },
           { name: "Adidas", link: "/collections/Adidas" },
-          { name: "Rebook", link: "/collections/Rebook" }
+          { name: "Reebok", link: "/collections/Reebok" }
         ]
       }
     ]
@@ -89,16 +93,19 @@ const toggleMobileMenu = (index: number) => {
 
 <template>
   <header
-    class="fixed top-0 left-0 w-full z-50 transition-colors duration-300"
+    class="fixed top-0 left-0 w-full z-[9999] transition-all duration-300"
     :class="isActive
       ? 'bg-white/90 backdrop-blur-md border-b border-gray-100 text-black'
       : 'bg-transparent text-white'"
   >
+    <!-- NAVBAR -->
     <div class="max-w-7xl mx-auto px-4 md:px-8 py-4 grid grid-cols-3 items-center text-xs tracking-[0.15em]">
-      
+
       <!-- LEFT -->
       <div class="flex items-center gap-4">
-        <button @click="isOpen = true" class="md:hidden text-lg">☰</button>
+        <button @click="isOpen = true" class="md:hidden">
+          <Icon name="heroicons:bars-3" class="w-6 h-6" />
+        </button>
 
         <nav class="hidden md:flex items-center gap-10">
           <div
@@ -107,9 +114,9 @@ const toggleMobileMenu = (index: number) => {
             class="relative"
             @mouseenter="activeMenu = item.name"
           >
-            <NuxtLink :to="item.link" class="hover:opacity-60">
+            <div class="hover:opacity-60">
               {{ item.name }}
-            </NuxtLink>
+            </div>
           </div>
         </nav>
       </div>
@@ -118,21 +125,46 @@ const toggleMobileMenu = (index: number) => {
       <div class="flex justify-center">
         <NuxtLink to="/">
           <img
-            src="https://loveandflair.com/cdn/shop/files/LFLOGO_NEW-05_e8af3c6c-d2d5-45b6-8c0b-48c2140a3f31_150x@2x.png"
+            src="/image/logo/tus.PNG"
             class="h-5 md:h-6"
           />
         </NuxtLink>
       </div>
 
       <!-- RIGHT -->
-      <div class="flex justify-end gap-4 md:gap-6">
-        <div class="hidden md:flex gap-6">
-          <NuxtLink to="/account">JOIN US</NuxtLink>
-          <NuxtLink to="/about">ABOUT</NuxtLink>
-          <NuxtLink to="/contact">CONTACT US</NuxtLink>
+      <div class="flex justify-end items-center gap-4 md:gap-6">
+
+        <!-- DESKTOP -->
+        <div class="hidden md:flex items-center gap-6">
+
+          <NuxtLink to="/account/login" class="hover:opacity-60">
+            LOGIN
+          </NuxtLink>
+
+          <NuxtLink to="/about" class="hover:opacity-60">
+            ABOUT
+          </NuxtLink>
+
+          <NuxtLink to="/contact" class="hover:opacity-60">
+            CONTACT
+          </NuxtLink>
+
+          <!-- ICON GROUP -->
+          <div class="flex items-center gap-4 ml-2">
+            <NuxtLink to="/account/login">
+              <Icon name="heroicons:user" class="w-5 h-5" />
+            </NuxtLink>
+          </div>
+
         </div>
 
-        <NuxtLink to="/cart" class="md:hidden">cart</NuxtLink>
+        <!-- MOBILE -->
+        <div class="flex md:hidden items-center gap-4">
+          <NuxtLink to="/account/login">
+            <Icon name="heroicons:user" class="w-5 h-5" />
+          </NuxtLink>
+        </div>
+
       </div>
     </div>
 
@@ -147,14 +179,13 @@ const toggleMobileMenu = (index: number) => {
         <div class="max-w-7xl mx-auto px-8 py-12">
           <div class="grid grid-cols-12 gap-10">
 
-            <!-- LINKS -->
-            <div class="col-span-9 grid grid-cols-3 gap-10 font-[200]">
+            <div class="col-span-9 grid grid-cols-3 gap-10">
               <div
                 v-for="group in activeItem.children"
                 :key="group.title"
                 class="space-y-4"
               >
-                <h4 class="text-[12px] tracking-widest text-gray-400 ">
+                <h4 class="text-xs text-gray-400 tracking-widest">
                   {{ group.title }}
                 </h4>
 
@@ -171,17 +202,11 @@ const toggleMobileMenu = (index: number) => {
               </div>
             </div>
 
-            <!-- IMAGE -->
             <div class="col-span-3">
-              <div class="relative overflow-hidden rounded-lg group">
-                <img
-                  src="https://loveandflair.com/cdn/shop/collections/Screenshot_2023-12-12_at_12.03.19_AM.png?v=1774839144&width=3000"
-                  class="w-full h-[220px] object-cover transition duration-500 group-hover:scale-105"
-                />
-                <div class="absolute bottom-3 left-3 text-white text-xs tracking-widest">
-                  NEW ARRIVALS →
-                </div>
-              </div>
+              <img
+                src="https://loveandflair.com/cdn/shop/collections/Screenshot_2023-12-12_at_12.03.19_AM.png"
+                class="w-full h-[220px] object-cover rounded-lg"
+              />
             </div>
 
           </div>
@@ -189,28 +214,41 @@ const toggleMobileMenu = (index: number) => {
       </div>
     </transition>
 
-    <!-- MOBILE OVERLAY -->
-    <div
-      v-if="isOpen"
-      class="fixed inset-0 bg-black/40 z-40"
-      @click="isOpen = false"
-    />
+    <!-- OVERLAY -->
+    <transition name="fade">
+      <div
+        v-if="isOpen"
+        class="fixed inset-0 bg-black/40 z-[998]"
+        @click="isOpen = false"
+      />
+    </transition>
 
     <!-- MOBILE MENU -->
     <div
       v-if="isOpen"
-      class="fixed top-0 left-0 w-[80%] h-full bg-white z-50 p-6 overflow-y-auto"
+      class="fixed top-0 left-0 w-[85%] max-w-sm h-full bg-white z-[9999] p-6 overflow-y-auto"
     >
-      <div class="flex justify-between mb-8">
-        <span>MENU</span>
-        <button @click="isOpen = false">✕</button>
+      <!-- HEADER -->
+      <div class="flex justify-between items-center mb-8">
+        <span class="text-sm tracking-widest">MENU</span>
+        <button @click="isOpen = false">
+          <Icon name="heroicons:x-mark" class="w-5 h-5" />
+        </button>
       </div>
 
-      <nav class="flex flex-col gap-6">
-        <div v-for="(item, index) in menu" :key="item.name">
-          
+      <!-- NAV -->
+      <nav class="flex flex-col divide-y text-black">
+        <div
+          v-for="(item, index) in menu"
+          :key="item.name"
+          class="py-4"
+        >
           <div class="flex justify-between items-center">
-            <NuxtLink :to="item.link" @click="isOpen = false">
+            <NuxtLink
+              :to="item.link"
+              @click="isOpen = false"
+              class="text-sm"
+            >
               {{ item.name }}
             </NuxtLink>
 
@@ -218,34 +256,40 @@ const toggleMobileMenu = (index: number) => {
               v-if="item.children"
               @click="toggleMobileMenu(index)"
             >
-              +
+              <Icon
+                name="heroicons:chevron-down"
+                class="w-4 h-4 transition"
+                :class="{ 'rotate-180': activeMobileMenu === index }"
+              />
             </button>
           </div>
 
-          <div
-            v-if="item.children && activeMobileMenu === index"
-            class="mt-3 ml-3 flex flex-col gap-3"
-          >
-            <div v-for="group in item.children" :key="group.title">
-              <p class="text-xs font-semibold mb-2">
-                {{ group.title }}
-              </p>
+          <transition name="accordion">
+            <div
+              v-show="item.children && activeMobileMenu === index"
+              class="mt-4 pl-3 space-y-4"
+            >
+              <div v-for="group in item.children" :key="group.title">
+                <p class="text-xs text-gray-400 mb-2">
+                  {{ group.title }}
+                </p>
 
-              <NuxtLink
-                v-for="child in group.items"
-                :key="child.name"
-                :to="child.link"
-                class="block text-sm opacity-70"
-                @click="isOpen = false"
-              >
-                {{ child.name }}
-              </NuxtLink>
+                <NuxtLink
+                  v-for="child in group.items"
+                  :key="child.name"
+                  :to="child.link"
+                  class="block text-sm text-gray-600 py-1"
+                  @click="isOpen = false"
+                >
+                  {{ child.name }}
+                </NuxtLink>
+              </div>
             </div>
-          </div>
-
+          </transition>
         </div>
       </nav>
     </div>
+
   </header>
 </template>
 
@@ -254,14 +298,28 @@ const toggleMobileMenu = (index: number) => {
 .mega-leave-active {
   transition: all 0.25s ease;
 }
-
-.mega-enter-from {
+.mega-enter-from,
+.mega-leave-to {
   opacity: 0;
   transform: translateY(10px);
 }
 
-.mega-leave-to {
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
-  transform: translateY(10px);
+}
+
+.accordion-enter-active,
+.accordion-leave-active {
+  transition: all 0.2s ease;
+}
+.accordion-enter-from,
+.accordion-leave-to {
+  opacity: 0;
+  transform: translateY(-5px);
 }
 </style>
