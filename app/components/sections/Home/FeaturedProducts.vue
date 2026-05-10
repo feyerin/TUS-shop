@@ -81,7 +81,7 @@ const products = [
   <!-- HEADER -->
   <div class="flex items-end justify-between mb-16">
     <h2 class="text-[32px] md:text-[56px] font-light leading-tight">
-      Featured <span class="italic">Products</span>
+      Featured <span class="italic font-secondary">Products</span>
     </h2>
 
     <NuxtLink

@@ -11,7 +11,7 @@ export default {
     extend: {
       fontFamily: {
         primary: ['Figtree', 'sans-serif'],
-        secondary: ['Cormorant', 'serif']
+        secondary: ['"Cormorant Upright"', 'serif']
       },
       animation: {
         marquee: "marquee 20s linear infinite",

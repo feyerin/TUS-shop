@@ -8,5 +8,11 @@ export default defineNuxtConfig({
   typescript: {
     strict: true
   },
+  runtimeConfig: {
+    public: {
+      apiBase:
+        import.meta.env.NUXT_PUBLIC_API_BASE || ""
+    }
+  },
   ssr: false
 })

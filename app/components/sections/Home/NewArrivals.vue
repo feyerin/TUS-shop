@@ -2,10 +2,13 @@
 import { ref } from "vue"
 import { products } from "../../../../data/products"
 
+const { currency } = useFormatter();
+
 const slider = ref<HTMLElement | null>(null)
 const selectedProduct = ref<any>(null)
 const qty = ref(1)
 const selectedSize = ref("")
+const selectedColor = ref<string | null>(null)
 
 const scrollLeft = () => {
   slider.value?.scrollBy({ left: -400, behavior: "smooth" })
@@ -23,11 +26,6 @@ const openQuickView = (product: any) => {
 
 const closeQuickView = () => {
   selectedProduct.value = null
-}
-
-const incQty = () => qty.value++
-const decQty = () => {
-  if (qty.value > 1) qty.value--
 }
 </script>
 
@@ -62,19 +60,14 @@ const decQty = () => {
         :key="p.id"
         class="min-w-[260px] group cursor-pointer"
       >
-        <div class="relative overflow-hidden">
+        <div
+          @click="openQuickView(p)"
+          class="relative overflow-hidden"
+          >
           <img
             :src="p.image"
             class="w-full h-[360px] object-cover transition duration-700 group-hover:scale-105"
           />
-
-          <!-- QUICK VIEW -->
-          <button
-            @click="openQuickView(p)"
-            class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white text-black text-xs px-5 py-2 opacity-0 group-hover:opacity-100 transition"
-          >
-            QUICK VIEW
-          </button>
         </div>
 
         <div class="mt-3 text-sm">
@@ -88,7 +81,7 @@ const decQty = () => {
     <transition name="slide">
       <div
         v-if="selectedProduct"
-        class="fixed inset-0 z-50 flex justify-end"
+        class="fixed inset-0 z-50 flex justify-end mt-12"
       >
         <!-- overlay -->
         <div
@@ -98,10 +91,10 @@ const decQty = () => {
 
         <!-- drawer -->
         <div class="relative w-full md:w-[900px] bg-white h-full overflow-y-auto">
-          
+
           <!-- CLOSE -->
           <button
-            class="absolute top-6 right-6 text-xl"
+            class="absolute top-6 right-6 text-xl z-20"
             @click="closeQuickView"
           >
             ✕
@@ -110,42 +103,74 @@ const decQty = () => {
           <div class="grid md:grid-cols-2 h-full">
 
             <!-- LEFT IMAGES -->
-            <div class="p-6 grid grid-cols-2 gap-4">
-              <img
-                :src="selectedProduct.image"
-                class="col-span-2 w-full h-[420px] object-cover"
-              />
-              <img
-                v-for="i in 3"
-                :key="i"
-                :src="selectedProduct.image"
-                class="w-full h-[140px] object-cover hover:opacity-70 cursor-pointer"
-              />
+            <div class="p-6 space-y-4">
+
+              <!-- TOP 2 -->
+              <div class="grid grid-cols-2 gap-4">
+                <img
+                  :src="selectedProduct.image"
+                  class="w-full h-[320px] object-cover"
+                />
+
+                <img
+                  :src="selectedProduct.image"
+                  class="w-full h-[320px] object-cover"
+                />
+              </div>
+
+              <!-- BOTTOM 3 -->
+              <div class="grid grid-cols-3 gap-4">
+                <img
+                  v-for="i in 3"
+                  :key="i"
+                  :src="selectedProduct.image"
+                  class="w-full h-[180px] object-cover hover:opacity-70 cursor-pointer transition"
+                />
+              </div>
+
             </div>
 
             <!-- RIGHT INFO -->
-            <div class="p-8 flex flex-col">
-              <h2 class="text-2xl font-light mb-2">
+            <div class="p-8 flex flex-col font-primary">
+
+              <!-- BRAND -->
+              <h2 class="text-3xl font-light mb-2">
                 {{ selectedProduct.name }}
               </h2>
 
-              <p class="text-lg text-gray-600 mb-6">
-                {{ selectedProduct.price }}
+              <!-- PRICE -->
+              <p class="text-xl text-gray-700 my-4 font-light">
+                {{ currency(selectedProduct.price) }}
               </p>
 
+              <p class="my-4 text-xs font-thin tracking-[0.2em]">
+                LOVE AND FLAIR
+              </p>
+
+              <!-- DESCRIPTION -->
+              <div class="pb-6 mb-6 border-b border-gray-200">
+                <p class="text-xs font-thin leading-6 text-gray-600">
+                  THALUNE TROUSERS The Thalune Trousers exude modern refinement with
+                  their impeccably tailored silhouette and structure...
+                </p>
+              </div>
+
               <!-- SIZE -->
-              <div class="mb-6">
-                <p class="text-sm mb-2">Size</p>
-                <div class="flex gap-3">
+              <div class="mb-8">
+                <p class="text-sm mb-4">
+                  Size
+                </p>
+
+                <div class="flex gap-4 font-thin">
                   <button
                     v-for="s in ['XS','S','M','L']"
                     :key="s"
                     @click="selectedSize = s"
                     :class="[
-                      'border px-3 py-1 text-sm transition',
+                      'px-1 py-1 text-sm transition border-b',
                       selectedSize === s
-                        ? 'bg-black text-white'
-                        : 'hover:bg-black hover:text-white'
+                        ? 'border-black'
+                        : 'border-transparent hover:border-black'
                     ]"
                   >
                     {{ s }}
@@ -153,22 +178,43 @@ const decQty = () => {
                 </div>
               </div>
 
-              <!-- QTY -->
-              <div class="flex items-center border w-[140px] mb-6">
-                <button @click="decQty" class="px-4 py-2">-</button>
-                <div class="flex-1 text-center">{{ qty }}</div>
-                <button @click="incQty" class="px-4 py-2">+</button>
+              <!-- COLOR -->
+              <div class="mb-10 pb-6 border-b">
+                <p class="text-sm mb-4">
+                  Color
+                </p>
+
+                <div class="flex items-center gap-4">
+                  <button
+                    v-for="color in [
+                      '#000000',
+                      '#FFFFFF',
+                      '#D4B996',
+                      '#8B5E3C',
+                      '#C0392B'
+                    ]"
+                    :key="color"
+                    @click="selectedColor = color"
+                    class="w-6 h-6 rounded-full border transition"
+                    :class="
+                      selectedColor === color
+                        ? 'ring-1 ring-black ring-offset-2'
+                        : 'hover:scale-110'
+                    "
+                    :style="{
+                      backgroundColor: color
+                    }"
+                  />
+                </div>
               </div>
 
               <!-- CTA -->
-              <button class="bg-black text-white py-4 text-sm tracking-widest hover:opacity-80">
-                ADD TO CART
+              <button
+                class="bg-black text-white py-4 text-sm tracking-[0.2em] hover:opacity-80 transition"
+              >
+                BUY
               </button>
 
-              <!-- STOCK -->
-              <p class="mt-6 text-sm text-gray-500">
-                5 IN STOCK
-              </p>
             </div>
 
           </div>

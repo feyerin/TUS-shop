@@ -1,10 +1,10 @@
 <template>
   <div class="relative">
-    <LayoutNavbar />
+    <LayoutNavbar class="z-50" />
 
-    <main class="relative z-0">
-      <slot />
-    </main>
+      <main>
+        <slot />
+      </main>
 
     <LayoutFooter />
   </div>

@@ -1,26 +1,65 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, computed } from "vue"
-import { useRoute } from "vue-router"
+import type { Collection, CollectionResponse } from "~/type/collection"
 
 const route = useRoute()
+const { getCollections } = useCollectionApi()
 
+interface MenuChild {
+  name: string
+  link: string
+}
+
+interface MenuGroup {
+  title: string
+  items: MenuChild[]
+}
+
+interface MenuItem {
+  name: string
+  link: string
+  children?: MenuGroup[]
+}
+
+// STATE
+const collections = ref<Collection[]>([])
 const isScrolled = ref(false)
 const isOpen = ref(false)
 const activeMenu = ref<string | null>(null)
 const activeMobileMenu = ref<number | null>(null)
 
+// SCROLL
 const handleScroll = () => {
   isScrolled.value = window.scrollY > 50
 }
 
+// FETCH
+const fetchCollections = async () => {
+  try {
+    const res: CollectionResponse =
+      await getCollections()
+
+    collections.value =
+      res.data.collections ?? []
+
+  } catch (err) {
+    console.error(
+      "Failed fetch collections",
+      err
+    )
+  }
+}
+
+// LIFECYCLE
 onMounted(() => {
   window.addEventListener("scroll", handleScroll)
+  fetchCollections()
 })
 
 onUnmounted(() => {
   window.removeEventListener("scroll", handleScroll)
 })
 
+// HEADER
 const transparentRoutes = ["/", "/account/login"]
 
 const isActive = computed(() => {
@@ -33,58 +72,50 @@ const isActive = computed(() => {
   return true
 })
 
-const menu = [
-  { name: "NEW", link: "/collections/NEW" },
+// MENU
+const menu = computed<MenuItem[]>(() => [
+  {
+    name: "NEW",
+    link: "/collections/new"
+  },
   {
     name: "COLLECTIONS",
-    link: "/collections",
-    children: [
-      {
-        title: "TOPS",
-        items: [
-          { name: "T-Shirts", link: "/collections/T-Shirts" },
-          { name: "Shirts", link: "/collections/Shirts" },
-          { name: "Tank Tops", link: "/collections/Tank-Tops" }
-        ]
-      },
-      {
-        title: "BOTTOMS",
-        items: [
-          { name: "Jeans", link: "/collections/Jeans" },
-          { name: "Shorts", link: "/collections/Shorts" },
-          { name: "Skirts", link: "/collections/Skirts" }
-        ]
-      },
-      {
-        title: "OUTERWEAR",
-        items: [
-          { name: "Jackets", link: "/collections/Jackets" },
-          { name: "Blazers", link: "/collections/Blazers" }
-        ]
-      }
-    ]
+    link: "/collections/all",
+
+    children:
+      collections.value.map(
+        (collection) => ({
+          title: collection.name.toUpperCase(),
+          items:
+            collection.categories.map(
+              (category) => ({
+                name:
+                  category.name,
+
+                link:
+                  `/collections/${category.slug}`
+              })
+            )
+        })
+      )
   },
   {
     name: "BRAND",
-    link: "/collections",
-    children: [
-      {
-        title: "BRANDS",
-        items: [
-          { name: "NIKE", link: "/collections/NIKE" },
-          { name: "Adidas", link: "/collections/Adidas" },
-          { name: "Reebok", link: "/collections/Reebok" }
-        ]
-      }
-    ]
+    link: "collections/brand"
   },
-  { name: "SALE", link: "/collections/SALE" }
-]
+  {
+    name: "SALE",
+    link: "/collections/sale"
+  }
+])
 
 const activeItem = computed(() =>
-  menu.find((item) => item.name === activeMenu.value)
+  menu.value.find(
+    item => item.name === activeMenu.value
+  )
 )
 
+// MOBILE
 const toggleMobileMenu = (index: number) => {
   activeMobileMenu.value =
     activeMobileMenu.value === index ? null : index
@@ -114,9 +145,12 @@ const toggleMobileMenu = (index: number) => {
             class="relative"
             @mouseenter="activeMenu = item.name"
           >
-            <div class="hover:opacity-60">
+            <NuxtLink
+              :to="item.link"
+              class="hover:opacity-60"
+            >
               {{ item.name }}
-            </div>
+            </NuxtLink>
           </div>
         </nav>
       </div>
@@ -136,7 +170,6 @@ const toggleMobileMenu = (index: number) => {
 
         <!-- DESKTOP -->
         <div class="hidden md:flex items-center gap-6">
-
           <NuxtLink to="/account/login" class="hover:opacity-60">
             LOGIN
           </NuxtLink>
@@ -149,13 +182,11 @@ const toggleMobileMenu = (index: number) => {
             CONTACT
           </NuxtLink>
 
-          <!-- ICON GROUP -->
           <div class="flex items-center gap-4 ml-2">
             <NuxtLink to="/account/login">
               <Icon name="heroicons:user" class="w-5 h-5" />
             </NuxtLink>
           </div>
-
         </div>
 
         <!-- MOBILE -->
@@ -190,7 +221,10 @@ const toggleMobileMenu = (index: number) => {
                 </h4>
 
                 <ul class="space-y-2">
-                  <li v-for="child in group.items" :key="child.name">
+                  <li
+                    v-for="child in group.items"
+                    :key="child.name"
+                  >
                     <NuxtLink
                       :to="child.link"
                       class="text-xs hover:opacity-60"
@@ -214,82 +248,91 @@ const toggleMobileMenu = (index: number) => {
       </div>
     </transition>
 
-    <!-- OVERLAY -->
-    <transition name="fade">
+    <!-- MOBILE NAVBAR -->
+    <Teleport to="body">
+      <!-- OVERLAY -->
+      <transition name="fade">
+        <div
+          v-if="isOpen"
+          class="fixed inset-0 bg-black/40 z-[998]"
+          @click="isOpen = false"
+        />
+      </transition>
+
+      <!-- MOBILE MENU -->
       <div
         v-if="isOpen"
-        class="fixed inset-0 bg-black/40 z-[998]"
-        @click="isOpen = false"
-      />
-    </transition>
+        class="fixed top-0 left-0 w-[85%] max-w-sm h-full bg-white z-[9999] p-6 overflow-y-auto"
+      >
+        <div class="flex justify-between items-center mb-8">
+          <span class="text-sm tracking-widest">
+            MENU
+          </span>
 
-    <!-- MOBILE MENU -->
-    <div
-      v-if="isOpen"
-      class="fixed top-0 left-0 w-[85%] max-w-sm h-full bg-white z-[9999] p-6 overflow-y-auto"
-    >
-      <!-- HEADER -->
-      <div class="flex justify-between items-center mb-8">
-        <span class="text-sm tracking-widest">MENU</span>
-        <button @click="isOpen = false">
-          <Icon name="heroicons:x-mark" class="w-5 h-5" />
-        </button>
-      </div>
-
-      <!-- NAV -->
-      <nav class="flex flex-col divide-y text-black">
-        <div
-          v-for="(item, index) in menu"
-          :key="item.name"
-          class="py-4"
-        >
-          <div class="flex justify-between items-center">
-            <NuxtLink
-              :to="item.link"
-              @click="isOpen = false"
-              class="text-sm"
-            >
-              {{ item.name }}
-            </NuxtLink>
-
-            <button
-              v-if="item.children"
-              @click="toggleMobileMenu(index)"
-            >
-              <Icon
-                name="heroicons:chevron-down"
-                class="w-4 h-4 transition"
-                :class="{ 'rotate-180': activeMobileMenu === index }"
-              />
-            </button>
-          </div>
-
-          <transition name="accordion">
-            <div
-              v-show="item.children && activeMobileMenu === index"
-              class="mt-4 pl-3 space-y-4"
-            >
-              <div v-for="group in item.children" :key="group.title">
-                <p class="text-xs text-gray-400 mb-2">
-                  {{ group.title }}
-                </p>
-
-                <NuxtLink
-                  v-for="child in group.items"
-                  :key="child.name"
-                  :to="child.link"
-                  class="block text-sm text-gray-600 py-1"
-                  @click="isOpen = false"
-                >
-                  {{ child.name }}
-                </NuxtLink>
-              </div>
-            </div>
-          </transition>
+          <button @click="isOpen = false">
+            <Icon
+              name="heroicons:x-mark"
+              class="w-5 h-5"
+            />
+          </button>
         </div>
-      </nav>
-    </div>
 
+        <nav class="flex flex-col divide-y text-black">
+          <div
+            v-for="(item, index) in menu"
+            :key="item.name"
+            class="py-4"
+          >
+            <div class="flex justify-between items-center">
+              <NuxtLink
+                :to="item.link"
+                @click="isOpen = false"
+                class="text-sm"
+              >
+                {{ item.name }}
+              </NuxtLink>
+
+              <button
+                v-if="item.children"
+                @click="toggleMobileMenu(index)"
+              >
+                <Icon
+                  name="heroicons:chevron-down"
+                  class="w-4 h-4 transition"
+                  :class="{ 'rotate-180': activeMobileMenu === index }"
+                />
+              </button>
+            </div>
+
+            <transition name="accordion">
+              <div
+                v-show="item.children && activeMobileMenu === index"
+                class="mt-4 pl-3 space-y-4"
+              >
+                <div
+                  v-for="group in item.children"
+                  :key="group.title"
+                >
+                  <p class="text-xs text-gray-400 mb-2">
+                    {{ group.title }}
+                  </p>
+
+                  <NuxtLink
+                    v-for="child in group.items"
+                    :key="child.name"
+                    :to="child.link"
+                    class="block text-sm text-gray-600 py-1"
+                    @click="isOpen = false"
+                  >
+                    {{ child.name }}
+                  </NuxtLink>
+                </div>
+              </div>
+            </transition>
+          </div>
+        </nav>
+      </div>
+    </Teleport>
   </header>
 </template>
 
@@ -298,6 +341,7 @@ const toggleMobileMenu = (index: number) => {
 .mega-leave-active {
   transition: all 0.25s ease;
 }
+
 .mega-enter-from,
 .mega-leave-to {
   opacity: 0;
@@ -308,6 +352,7 @@ const toggleMobileMenu = (index: number) => {
 .fade-leave-active {
   transition: opacity 0.2s ease;
 }
+
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
@@ -317,6 +362,7 @@ const toggleMobileMenu = (index: number) => {
 .accordion-leave-active {
   transition: all 0.2s ease;
 }
+
 .accordion-enter-from,
 .accordion-leave-to {
   opacity: 0;

@@ -29,58 +29,64 @@ const formatPrice = (p: number) =>
 </script>
 
 <template>
-  <section class="max-w-7xl mx-auto px-6 py-16">
+  <section class="max-w-7xl mx-auto px-6 py-16 mt-6">
 
     <!-- BREADCRUMB -->
     <UiBreadcrumb class="mb-8" />
 
-    <div class="grid md:grid-cols-2 gap-16">
+    <div class="grid md:grid-cols-[60%_40%] gap-16">
 
       <!-- LEFT -->
-      <div>
-        <!-- MAIN IMAGE -->
-        <img
-          :src="activeImage"
-          class="w-full object-cover mb-3 transition"
-        />
+      <div class="space-y-3">
 
-        <!-- THUMBNAILS -->
-        <div class="grid grid-cols-4 gap-2">
+        <!-- TOP 2 IMAGES -->
+        <div class="grid grid-cols-2 gap-3">
           <img
-            v-for="(img, i) in product.images"
+            v-for="(img, i) in product.images.slice(0, 2)"
             :key="i"
             :src="img"
             @click="activeImage = img"
-            class="cursor-pointer border"
+            class="w-full h-full object-cover cursor-pointer transition"
             :class="{
-              'border-black': activeImage === img,
-              'opacity-60 hover:opacity-100': activeImage !== img
+              'opacity-100': activeImage === img,
+              'opacity-70 hover:opacity-100': activeImage !== img
             }"
           />
         </div>
+
+        <!-- BOTTOM IMAGES -->
+        <div class="grid grid-cols-3 gap-3">
+          <img
+            v-for="(img, i) in product.images.slice(1)"
+            :key="i"
+            :src="img"
+            @click="activeImage = img"
+            class="w-full h-full object-cover cursor-pointer transition"
+            :class="{
+              'opacity-100': activeImage === img,
+              'opacity-70 hover:opacity-100': activeImage !== img
+            }"
+          />
+        </div>
+
       </div>
 
       <!-- RIGHT -->
-      <div class="space-y-8">
+      <div class="space-y-10">
 
         <!-- INFO -->
         <div>
-          <h1 class="text-2xl font-medium leading-snug">
+          <h1 class="text-[40px] font-normal font-primary leading-snug tracking-tighter">
             {{ product.name }}
           </h1>
 
-          <p class="text-xs text-gray-400 mt-1">
+          <p class="text-xs text-gray-400 my-6">
             {{ product.brand }}
           </p>
 
-          <p class="mt-4 text-lg font-medium">
+          <p class="mt-4 text-[20px]">
             {{ formatPrice(product.price) }}
           </p>
-
-          <div class="flex items-center gap-2 text-sm text-gray-500 mt-2">
-            <Icon name="heroicons:check-circle" class="w-4 h-4" />
-            <span>{{ product.stock }} IN STOCK</span>
-          </div>
         </div>
 
         <!-- SIZE -->
@@ -99,27 +105,6 @@ const formatPrice = (p: number) =>
 
         <!-- QTY -->
         <div class="flex items-center gap-4">
-
-          <div class="flex border">
-            <button
-              class="px-3 disabled:opacity-30"
-              :disabled="qty === 1"
-              @click="qty--"
-            >
-              -
-            </button>
-
-            <span class="px-4 flex items-center">
-              {{ qty }}
-            </span>
-
-            <button
-              class="px-3"
-              @click="qty++"
-            >
-              +
-            </button>
-          </div>
 
           <button class="flex-1 bg-black text-white py-3 text-sm hover:opacity-90 transition">
             ADD TO CART
@@ -185,8 +170,8 @@ const formatPrice = (p: number) =>
     <!-- RELATED -->
     <div class="mt-24">
       <div class="flex justify-between items-end mb-8">
-        <h2 class="text-3xl font-light">
-          You May Also <i>Like</i>
+        <h2 class="text-[64px] font-light">
+          You May Also <span class="font-secondary italic">Like</span>
         </h2>
       </div>
 

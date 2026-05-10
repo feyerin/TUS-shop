@@ -30,7 +30,7 @@ function formatLabel(str: string) {
 </script>
 
 <template>
-  <div class="flex items-center gap-2 text-sm text-gray-400 flex-wrap">
+  <div class="flex items-center gap-2 text-sm text-gray-400 flex-wrap font-extralight">
     <template v-for="(item, i) in breadcrumbs" :key="item.to">
       
       <NuxtLink
