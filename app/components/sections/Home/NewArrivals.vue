@@ -65,14 +65,17 @@ const closeQuickView = () => {
           class="relative overflow-hidden"
           >
           <img
-            :src="p.image"
+            :src="p.imageUrl"
             class="w-full h-[360px] object-cover transition duration-700 group-hover:scale-105"
           />
         </div>
 
         <div class="mt-3 text-sm">
-          <p>{{ p.name }}</p>
-          <p class="text-gray-500">{{ p.price }}</p>
+          <p class="text-[11px] tracking-[0.2em] text-gray-400">
+            {{ "THE UNDERWEAR SUPPLY" }}
+          </p>
+          <p class="mt-1">{{ p.name }}</p>
+          <p class="text-gray-500">{{ currency(p.price) }}</p>
         </div>
       </div>
     </div>

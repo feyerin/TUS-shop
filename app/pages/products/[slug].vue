@@ -1,21 +1,55 @@
 <script setup lang="ts">
-import { ref } from "vue"
+import { ref, computed, watchEffect } from "vue"
+import { useRoute } from "vue-router"
 import { products } from "../../../data/products"
+import { useProductApi } from "~/composables/useProductApi"
 
-const product = {
-  name: "Jire Translucent Trousers In Ivory",
-  brand: "THE UNDERWEAR SUPPLY",
-  price: 699000,
-  stock: 60,
-  images: [
-    "https://loveandflair.com/cdn/shop/files/LF-182_1ae6d18f-cf3f-4be0-8e7f-15e06c3c9143.jpg",
-    "https://loveandflair.com/cdn/shop/files/LF-153_14554004-320f-4e6b-af12-928f87e83607.jpg",
-    "https://loveandflair.com/cdn/shop/files/LF-67_317a9282-74e2-453b-bb5b-02c5f28bf967.jpg",
-    "https://loveandflair.com/cdn/shop/files/LF-74_96046373-84c5-4dff-85d3-3102c380cfab.jpg"
-  ]
-}
+const route = useRoute()
+const slug = route.params.slug as string
 
-const activeImage = ref(product.images[0])
+const { data: response, pending } = await useAsyncData(`product-${slug}`, () => useProductApi().getProduct(slug))
+
+const product = computed(() => response.value?.data?.product)
+
+const decodedDescription = computed(() => {
+  let desc = product.value?.description || 'No description available.'
+  return desc
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&nbsp;/g, ' ')
+})
+
+const colors = computed(() => {
+  if (product.value?.colors && product.value.colors.length > 0) {
+    return product.value.colors
+  }
+  const options = response.value?.data?.colorsOption
+  if (options) {
+    return Object.values(options).map((opt: any) => ({
+      color: opt.color,
+      colorHexCode: opt.colorHexCode || opt.color
+    }))
+  }
+  return []
+})
+
+const imagesUrl = computed(() => {
+  if (!product.value) return []
+  return (product.value.coverImages || [])
+    .sort((a, b) => a.order - b.order)
+    .map(img => img.imageUrl)
+})
+
+const activeImage = ref('')
+watchEffect(() => {
+  if (imagesUrl.value.length && !activeImage.value) {
+    activeImage.value = imagesUrl.value[0]
+  }
+})
+
 const qty = ref(1)
 const activeAccordion = ref<string | null>(null)
 
@@ -34,15 +68,17 @@ const formatPrice = (p: number) =>
     <!-- BREADCRUMB -->
     <UiBreadcrumb class="mb-8" />
 
-    <div class="grid md:grid-cols-[60%_40%] gap-16">
+    <div v-if="pending" class="text-center py-20">Loading...</div>
+    <div v-else-if="!product" class="text-center py-20">Product not found.</div>
+    <div v-else class="grid md:grid-cols-[60%_40%] gap-16">
 
       <!-- LEFT -->
       <div class="space-y-3">
 
         <!-- TOP 2 IMAGES -->
-        <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-2 gap-3" v-if="imagesUrl.length > 0">
           <img
-            v-for="(img, i) in product.images.slice(0, 2)"
+            v-for="(img, i) in imagesUrl.slice(0, 2)"
             :key="i"
             :src="img"
             @click="activeImage = img"
@@ -55,9 +91,9 @@ const formatPrice = (p: number) =>
         </div>
 
         <!-- BOTTOM IMAGES -->
-        <div class="grid grid-cols-3 gap-3">
+        <div class="grid grid-cols-3 gap-3" v-if="imagesUrl.length > 2">
           <img
-            v-for="(img, i) in product.images.slice(1)"
+            v-for="(img, i) in imagesUrl.slice(2)"
             :key="i"
             :src="img"
             @click="activeImage = img"
@@ -80,19 +116,31 @@ const formatPrice = (p: number) =>
             {{ product.name }}
           </h1>
 
-          <p class="text-xs text-gray-400 my-6">
-            {{ product.brand }}
+          <p class="text-xs text-gray-400 my-6 uppercase">
+            {{ product.brandName }}
           </p>
 
-          <p class="mt-4 text-[20px]">
-            {{ formatPrice(product.price) }}
-          </p>
+          <div class="mt-4 flex items-center gap-3 text-[20px]">
+            <span v-if="product.discountValue > 0" class="line-through text-gray-400 text-base">
+              {{ formatPrice(product.basePrice) }}
+            </span>
+            <span>{{ formatPrice(product.finalPrice) }}</span>
+          </div>
         </div>
 
         <!-- SIZE -->
         <div>
           <p class="text-sm mb-2">Size</p>
-          <div class="border px-4 py-2 inline-block text-sm">
+          <div class="flex gap-2 flex-wrap" v-if="product.sizes && product.sizes.length">
+            <div
+              v-for="size in product.sizes"
+              :key="size"
+              class="border px-4 py-2 inline-block text-sm uppercase"
+            >
+              {{ size }}
+            </div>
+          </div>
+          <div v-else class="border px-4 py-2 inline-block text-sm">
             ONE SIZE
           </div>
         </div>
@@ -100,7 +148,16 @@ const formatPrice = (p: number) =>
         <!-- COLOR -->
         <div>
           <p class="text-sm mb-2">Color</p>
-          <div class="w-6 h-6 border rounded-full"></div>
+          <div class="flex gap-2 flex-wrap" v-if="colors.length">
+            <div
+              v-for="color in colors"
+              :key="color.color"
+              class="w-6 h-6 border rounded-full"
+              :style="{ backgroundColor: color.colorHexCode }"
+              :title="color.color"
+            ></div>
+          </div>
+          <div v-else class="w-6 h-6 border rounded-full bg-gray-200"></div>
         </div>
 
         <!-- QTY -->
@@ -131,9 +188,9 @@ const formatPrice = (p: number) =>
             <transition name="accordion">
               <div
                 v-show="activeAccordion === 'desc'"
-                class="pb-4 text-sm text-gray-600"
+                class="pb-4 text-sm text-gray-600 prose prose-sm"
+                v-html="decodedDescription"
               >
-                Lightweight translucent trousers with flowy silhouette.
               </div>
             </transition>
           </div>

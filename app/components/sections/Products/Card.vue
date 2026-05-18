@@ -2,8 +2,9 @@
 withDefaults(
   defineProps<{
     name: string
+    slug: string
     price: number
-    image: string
+    imageUrl: string
     soldOut?: boolean
     brand?: string
   }>(),
@@ -22,7 +23,7 @@ const formatPrice = (price: number) => {
 </script>
 
 <template>
-  <NuxtLink :to="`/products/${name}`">
+  <NuxtLink :to="`/products/${slug}`">
     <div class="group cursor-pointer">
       
       <!-- IMAGE -->
@@ -37,7 +38,7 @@ const formatPrice = (price: number) => {
         </div>
 
         <img
-          :src="image"
+          :src="imageUrl"
           :alt="name"
           class="w-full h-[420px] object-cover transition duration-700 group-hover:scale-105"
         />
