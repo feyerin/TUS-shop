@@ -14,5 +14,4 @@ export default defineNuxtConfig({
         import.meta.env.NUXT_PUBLIC_API_BASE || ""
     }
   },
-  ssr: false
 })
