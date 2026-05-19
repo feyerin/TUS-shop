@@ -1,24 +1,59 @@
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
+import { useContactApi } from '~/composables/useContactApi'
+import { useSocialMediaApi } from '~/composables/useSocialMediaApi'
+import type { ContactData } from '~/type/contact'
+import type { SocialMediaData } from '~/type/socialMedia'
 
+// FORM
 const form = reactive({
   name: '',
-  email: '',
   message: ''
 })
 
+// API
+const { getContact } = useContactApi()
+const { getSocialMedia } = useSocialMediaApi()
+
+const contact = ref<ContactData | null>(null)
+const social = ref<SocialMediaData | null>(null)
+
+const loading = ref(false)
+
+const fetchData = async () => {
+  loading.value = true
+
+  try {
+    const [contactRes, socialRes] = await Promise.all([
+      getContact(),
+      getSocialMedia()
+    ])
+
+    contact.value = contactRes.data
+    social.value = socialRes.data
+  } catch (err) {
+    console.error('Failed fetch contact/social', err)
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(() => {
+  fetchData()
+})
+
+// WHATSAPP
 const sendToWhatsApp = () => {
-  if (!form.name || !form.email || !form.message) {
+  if (!form.name || !form.message) {
     alert('Please fill all fields')
     return
   }
 
-  const phone = '6281234567890'
+  const phone = contact.value?.phone_number || '6281234567890'
 
   const text = `Hello, I would like to contact you.
 
 Name: ${form.name}
-Email: ${form.email}
 
 Message:
 ${form.message}`
@@ -26,10 +61,8 @@ ${form.message}`
   const encoded = encodeURIComponent(text)
   window.open(`https://wa.me/${phone}?text=${encoded}`, '_blank')
 
-  // reset form
   Object.assign(form, {
     name: '',
-    email: '',
     message: ''
   })
 }
@@ -58,48 +91,73 @@ ${form.message}`
       <!-- LEFT INFO -->
       <div class="space-y-12 text-sm text-gray-600">
 
-        <!-- ITEM -->
-        <div class="group flex items-start gap-4">
+        <!-- EMAIL -->
+        <div class="flex items-start gap-4">
           <div class="icon">@</div>
           <div>
             <p class="label">EMAIL</p>
-            <p class="hover-text">hello@yourbrand.com</p>
+            <p>{{ contact?.email }}</p>
           </div>
         </div>
 
-        <div class="group flex items-start gap-4">
+        <!-- PHONE -->
+        <div class="flex items-start gap-4">
           <div class="icon">☎</div>
           <div>
             <p class="label">PHONE</p>
-            <p class="hover-text">+62 812 3456 7890</p>
+            <p>{{ contact?.phone_number }}</p>
           </div>
         </div>
 
-        <div class="group flex items-start gap-4">
+        <!-- STORE -->
+        <div class="flex items-start gap-4">
           <div class="icon">📍</div>
           <div>
             <p class="label">STORE</p>
-            <p>
-              Jl. Kemang Raya No. 10<br />
-              Jakarta, Indonesia
-            </p>
+            <p>{{ contact?.store }}</p>
           </div>
         </div>
 
-        <div class="group flex items-start gap-4">
+        <!-- HOURS -->
+        <div class="flex items-start gap-4">
           <div class="icon">⏱</div>
           <div>
             <p class="label">HOURS</p>
-            <p>Mon – Sun, 10:00 – 22:00</p>
+            <p>{{ contact?.hours }}</p>
           </div>
         </div>
 
         <!-- SOCIAL -->
         <div class="space-y-3 pt-6">
           <p class="label">FOLLOW</p>
+
           <div class="flex gap-6 text-xs">
-            <a href="#" class="hover:underline">Instagram</a>
-            <a href="#" class="hover:underline">TikTok</a>
+            <a
+              v-if="social?.instagram"
+              :href="social.instagram"
+              target="_blank"
+              class="hover:underline"
+            >
+              Instagram
+            </a>
+
+            <a
+              v-if="social?.tiktok"
+              :href="social.tiktok"
+              target="_blank"
+              class="hover:underline"
+            >
+              TikTok
+            </a>
+
+            <a
+              v-if="social?.facebook"
+              :href="social.facebook"
+              target="_blank"
+              class="hover:underline"
+            >
+              Facebook
+            </a>
           </div>
         </div>
 
@@ -113,15 +171,6 @@ ${form.message}`
           <label class="label">NAME</label>
           <div class="input-wrapper">
             <input v-model="form.name" type="text" placeholder="Your name" class="input" />
-            <div class="line-base"></div>
-            <div class="line-active"></div>
-          </div>
-        </div>
-
-        <div class="group">
-          <label class="label">EMAIL</label>
-          <div class="input-wrapper">
-            <input v-model="form.email" type="email" placeholder="your@email.com" class="input" />
             <div class="line-base"></div>
             <div class="line-active"></div>
           </div>

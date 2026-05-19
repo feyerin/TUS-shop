@@ -1,5 +1,31 @@
 <script setup lang="ts">
+import type { SocialMediaData } from '~/type/socialMedia'
+
 const year = new Date().getFullYear()
+const { getSocialMedia } = useSocialMediaApi()
+
+const social = ref<SocialMediaData | null>(null)
+const loading = ref(false)
+const error = ref<string | null>(null)
+
+const fetchSocialMedia = async () => {
+  loading.value = true
+  error.value = null
+
+  try {
+    const res = await getSocialMedia()
+    social.value = res.data
+  } catch (err: any) {
+    error.value = err?.message || 'Failed to fetch social media'
+    console.error('Social media error:', err)
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(() => {
+  fetchSocialMedia()
+})
 </script>
 
 <template>
@@ -41,7 +67,7 @@ const year = new Date().getFullYear()
             <li><a href="#" class="hover:underline">How To Use Atome?</a></li>
             <li><a href="#" class="hover:underline">Loyalty Program</a></li>
             <li><a href="#" class="hover:underline">Returns / Exchanges</a></li>
-            <li><a href="#" class="hover:underline">Contact Us</a></li>
+            <li><a href="/contact" class="hover:underline">Contact Us</a></li>
           </ul>
         </div>
 
@@ -49,7 +75,7 @@ const year = new Date().getFullYear()
         <div>
           <h3 class="text-xs tracking-[0.3em] mb-4 text-white/60">ABOUT</h3>
           <ul class="space-y-3 text-sm">
-            <li><a href="#" class="hover:underline">Who We Are</a></li>
+            <li><a href="/about " class="hover:underline">Who We Are</a></li>
             <li><a href="#" class="hover:underline">Find Us Offline</a></li>
             <li><a href="#" class="hover:underline">Terms Of Use</a></li>
             <li><a href="#" class="hover:underline">Terms Of Service</a></li>
@@ -64,12 +90,36 @@ const year = new Date().getFullYear()
       <div class="max-w-7xl mx-auto flex justify-between items-center text-sm text-white/60">
         
         <p>
-          © Copyright, THE UNDERWEAR SUPPLY, {{ year }}
+          © Copyright, THE UNDERWEAR SUPPLY {{ year }}
         </p>
 
         <div class="flex gap-4">
-          <a href="#" class="hover:opacity-70">Instagram</a>
-          <a href="#" class="hover:opacity-70">Facebook</a>
+          <a
+            v-if="social?.instagram"
+            :href="social.instagram"
+            target="_blank"
+            class="hover:opacity-70"
+          >
+            Instagram
+          </a>
+
+          <a
+            v-if="social?.facebook"
+            :href="social.facebook"
+            target="_blank"
+            class="hover:opacity-70"
+          >
+            Facebook
+          </a>
+
+          <a
+            v-if="social?.tiktok"
+            :href="social.tiktok"
+            target="_blank"
+            class="hover:opacity-70"
+          >
+            TikTok
+          </a>
         </div>
 
       </div>
