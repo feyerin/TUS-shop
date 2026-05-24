@@ -1,21 +1,28 @@
 <script setup lang="ts">
-const featured = [
-  {
-    title: "ACTIVEWEAR",
-    image: "https://loveandflair.com/cdn/shop/files/Screenshot_2026-03-05_at_09.58.48.png?v=1772679540&width=1100",
-    link: "/category/activewear"
-  },
-  {
-    title: "DRESSES",
-    image: "https://loveandflair.com/cdn/shop/files/Screenshot_2026-03-30_at_10.16.11.png?v=1774840582&width=1100",
-    link: "/category/dresses"
-  },
-  {
-    title: "KNITWEAR",
-    image: "https://loveandflair.com/cdn/shop/files/Screenshot_2026-03-30_at_10.13.30.png?v=1774840421&width=1100",
-    link: "/category/knitwear"
+import type { Brand, BrandResponse } from '~/type/brand'
+
+const { getBrands } = useBrandApi()
+
+const brands = ref<Brand[]>([])
+
+const fetchBrand = async () => {
+  try {
+    const res: BrandResponse =
+      await getBrands()
+
+    brands.value = res.data.brands ?? []
+  } catch (err) {
+    console.error(
+      'Failed fetch brand',
+      err
+    )
   }
-]
+}
+
+onMounted(() => {
+  fetchBrand()
+})
+
 </script>
 
 <template>
@@ -24,9 +31,9 @@ const featured = [
     <div class="grid md:grid-cols-3 gap-12 md:gap-0">
 
       <NuxtLink
-        v-for="(item, i) in featured"
-        :key="item.title"
-        :to="item.link"
+        v-for="(item, i) in brands"
+        :key="item.id"
+        :to="`/brands/${item.slug}`"
         class="group text-center relative px-4"
       >
         <!-- divider -->
@@ -38,14 +45,14 @@ const featured = [
         <!-- IMAGE -->
         <div class="overflow-hidden mb-6">
           <img
-            :src="item.image"
+            :src="item.profileImageUrl"
             class="w-full h-[420px] object-cover transition duration-700 group-hover:scale-105"
           />
         </div>
 
         <!-- TITLE -->
         <h3 class="text-sm tracking-[0.2em] text-gray-800">
-          {{ item.title }}
+          {{ item.name }}
         </h3>
 
         <!-- UNDERLINE -->

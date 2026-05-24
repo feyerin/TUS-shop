@@ -21,23 +21,63 @@ const slides = [
       "https://loveandflair.com/cdn/shop/files/Banner_WEB_d61cb1ea-8403-4095-b601-926fe7e143ff.png?v=1771554406&width=3000"
   }
 ]
+
+const {
+  dynamicSections,
+  pending,
+  error
+} = await useDynamicSections()
+
+const heroBanner = computed(() =>
+  dynamicSections.value.find(
+    section => section.sectionKey === "hero_banner"
+  )
+)
+
+const runningText = computed(() =>
+  dynamicSections.value.find(
+    section => section.sectionKey === "running_text"
+  )
+)
+
+const featuredProducts = computed(() =>
+  dynamicSections.value.find(
+    section => section.sectionKey === "featured_products"
+  )
+)
+
+const collectionSection = computed(() =>
+  dynamicSections.value.find(
+    section => section.sectionKey === "collection_section"
+  )
+)
+
+const collectionSection2 = computed(() =>
+  dynamicSections.value.find(
+    section => section.sectionKey === "collection_section_2"
+  )
+)
+
+console.log(dynamicSections.value)
 </script>
 
 <template>
   <div class="bg-white">
     <div>
-      <SectionsHomeHero :slides="slides" />
+      <SectionsHomeHero :slides="heroBanner?.content" />
 
-      <SectionsHomeAnnouncementBar />
+      <SectionsHomeAnnouncementBar :runningText="runningText?.content.text"/>
 
       <SectionsHomeNewArrivals /> 
 
-      <SectionsHomeFeaturedProducts/>
+      <SectionsHomeFeaturedProducts :featuredProducts="featuredProducts?.content" />
 
       <SectionsHomeEditorialSplit
-        title="A Season of Ease"
-        subtitle="SUMMER 2026"
-        image="https://images.unsplash.com/photo-1490481651871-ab68de25d43d"
+        :title="collectionSection?.content.title"
+        :subtitle="collectionSection?.content.subtitle"
+        :image="collectionSection?.content.image"
+        :buttonText="collectionSection?.content.buttonText"
+        :buttonLink="collectionSection?.content.buttonLink"
       />
 
       <SectionsHomeEditorialProductGrid />
@@ -45,30 +85,12 @@ const slides = [
       <SectionsHomeFeaturedCategories />
 
       <SectionsHomeEditorialBanner
-        title="A Season of Ease"
-        subtitle="SUMMER 2026"
-        image="https://www.masarishop.com/media/wysiwyg/Editorial/cadence-canvas/260312_lookbook_cadence_canvas_homepage.jpg"
+        :title="collectionSection2?.content.title"
+        :subtitle="collectionSection2?.content.subtitle"
+        :image="collectionSection2?.content.image"
+        :buttonText="collectionSection2?.content.buttonText"
+        :buttonLink="collectionSection2?.content.buttonLink"
       />
-
-      <section class="py-24 text-center">
-        <h2 class="font-serif text-3xl italic mb-4">
-          Join Our World
-        </h2>
-
-        <p class="text-sm text-gray-500 mb-6">
-          Get exclusive offers and updates
-        </p>
-
-        <div class="flex justify-center gap-2">
-          <input
-            placeholder="Your email"
-            class="border px-4 py-2 w-64"
-          />
-          <button class="border px-6 py-2 text-sm tracking-wide">
-            SUBSCRIBE
-          </button>
-        </div>
-      </section>
     </div>
   </div>
 </template>

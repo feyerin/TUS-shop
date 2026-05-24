@@ -114,8 +114,8 @@ const isActive = computed(() => {
 
 const menu = computed<MenuItem[]>(() => [
   {
-    name: 'NEW',
-    link: '/collections/new'
+    name: 'NEW IN',
+    link: '/new'
   },
 
   {
@@ -143,7 +143,7 @@ const menu = computed<MenuItem[]>(() => [
 
   {
     name: 'BRAND',
-    link: '/collections/brand',
+    link: '/brand/all',
 
     children: [
       {
@@ -162,7 +162,7 @@ const menu = computed<MenuItem[]>(() => [
 
   {
     name: 'SALE',
-    link: '/collections/sale'
+    link: '/sales'
   }
 ])
 

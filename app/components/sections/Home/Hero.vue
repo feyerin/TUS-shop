@@ -1,13 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue"
 
-interface Slide {
-  title: string
-  image: string
-}
-
 const props = defineProps<{
-  slides: Slide[]
+  slides: string
 }>()
 
 const current = ref(0)
@@ -26,7 +21,7 @@ const prevSlide = () => {
     (current.value - 1 + props.slides.length) % props.slides.length
 }
 
-// 👉 SWIPE SUPPORT
+// SWIPE SUPPORT
 let startX = 0
 
 let startY = 0
@@ -46,7 +41,7 @@ const onTouchEnd = (e: TouchEvent) => {
   const diffX = startX - endX
   const diffY = startY - endY
 
-  // 👉 ignore kalau scroll vertical lebih dominan
+  // ignore kalau scroll vertical lebih dominan
   if (Math.abs(diffY) > Math.abs(diffX)) return
 
   if (diffX > 50) nextSlide()
@@ -87,19 +82,12 @@ onUnmounted(() => {
       >
         <!-- IMAGE -->
         <img
-          :src="slide.image"
+          :src="slide"
           class="w-full h-full object-cover"
         />
 
         <!-- OVERLAY -->
         <div class="absolute inset-0 bg-black/20"></div>
-
-        <!-- TITLE (optional, mobile safe) -->
-        <div class="absolute bottom-10 left-6 right-6 text-white">
-          <h2 class="text-lg md:text-3xl font-light tracking-wide">
-            {{ slide.title }}
-          </h2>
-        </div>
       </div>
 
     </div>

@@ -1,10 +1,19 @@
 <script setup lang="ts">
-const props = defineProps<{
-  title: string
-  subtitle?: string
-  image: string
-  reverse?: boolean
-}>()
+const props = withDefaults(
+  defineProps<{
+    title: string
+    subtitle?: string
+    image: string
+    buttonText?: string
+    buttonLink?: string
+    reverse?: boolean
+  }>(),
+  {
+    buttonText: "DISCOVER",
+    buttonLink: "/",
+    reverse: false
+  }
+)
 </script>
 
 <template>
@@ -15,18 +24,17 @@ const props = defineProps<{
         reverse ? 'md:[&>*:first-child]:order-2' : ''
       ]"
     >
-
       <!-- IMAGE -->
       <div class="group overflow-hidden">
         <img
           :src="image"
+          :alt="title"
           class="w-full h-[600px] object-cover transition duration-[4000ms] ease-out group-hover:scale-105"
         />
       </div>
 
       <!-- TEXT -->
       <div class="max-w-md">
-
         <!-- SUBTITLE -->
         <p
           v-if="subtitle"
@@ -41,12 +49,13 @@ const props = defineProps<{
         </h2>
 
         <!-- CTA -->
-        <button class="text-xs tracking-[0.25em] border-b border-black pb-1 hover:opacity-60 transition">
-          DISCOVER
-        </button>
-
+        <NuxtLink
+          :to="buttonLink"
+          class="inline-block text-xs tracking-[0.25em] border-b border-black pb-1 hover:opacity-60 transition"
+        >
+          {{ buttonText }}
+        </NuxtLink>
       </div>
-
     </div>
   </section>
 </template>

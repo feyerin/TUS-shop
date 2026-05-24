@@ -64,7 +64,6 @@ onMounted(() => {
           <h3 class="text-xs tracking-[0.3em] mb-4 text-white/60">HELP</h3>
           <ul class="space-y-3 text-sm">
             <li><a href="#" class="hover:underline">FAQ + Help</a></li>
-            <li><a href="#" class="hover:underline">How To Use Atome?</a></li>
             <li><a href="#" class="hover:underline">Loyalty Program</a></li>
             <li><a href="#" class="hover:underline">Returns / Exchanges</a></li>
             <li><a href="/contact" class="hover:underline">Contact Us</a></li>
