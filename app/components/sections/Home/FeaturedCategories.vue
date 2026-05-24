@@ -22,7 +22,6 @@ const fetchBrand = async () => {
 onMounted(() => {
   fetchBrand()
 })
-
 </script>
 
 <template>
