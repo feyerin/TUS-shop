@@ -10,8 +10,8 @@ const services: ServiceItem[] = [
   {
     title: "Garment Manufacturing",
     icon: "lucide:briefcase-business",
-    iconBg: "bg-[#EF4B1A]",
-    textColor: "text-[#EF4B1A]",
+    iconBg: "bg-[#6b5f51]",
+    textColor: "text-[#6b5f51]",
   },
   {
     title: "Stock Fabric & Clothing",

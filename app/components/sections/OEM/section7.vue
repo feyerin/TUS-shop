@@ -39,7 +39,7 @@ const material = {
       <!-- Header -->
       <div class="mx-auto max-w-[850px] text-center">
         <p
-          class="font-primary text-[20px] font-bold leading-tight text-[#EF4B1A] sm:text-[22px]"
+          class="font-primary text-[20px] font-bold leading-tight text-[#6b5f51] sm:text-[22px]"
         >
           Sourcing fabrics and garment accessories
         </p>
@@ -60,11 +60,11 @@ const material = {
           accessories? Chinese markets have millions of material options for
           any project! Alamby Fashion will find you the right fabrics and
           garment accessories! We can offer you
-          <span class="font-bold text-[#EF4B1A]">
+          <span class="font-bold text-[#6b5f51]">
             free fabric swatches*
           </span>
           or
-          <span class="font-bold text-[#EF4B1A]">
+          <span class="font-bold text-[#6b5f51]">
             free garment accessory samples*
           </span>
         </p>
@@ -82,7 +82,7 @@ const material = {
             aria-hidden="true"
           >
             <div
-              class="h-full w-full bg-[radial-gradient(#EF4B1A_1px,transparent_1px)] [background-size:8px_8px]"
+              class="h-full w-full bg-[radial-gradient(#6b5f51_1px,transparent_1px)] [background-size:8px_8px]"
             />
           </div>
 
@@ -94,7 +94,7 @@ const material = {
               class="block font-primary text-left text-[36px] font-extrabold leading-[1.1] tracking-[-0.03em] transition-all duration-300 sm:text-[44px]"
               :class="
                 category.active
-                  ? 'text-[#181818] hover:text-[#EF4B1A]'
+                  ? 'text-[#181818] hover:text-[#6b5f51]'
                   : 'text-[#BEBEBE] hover:text-[#181818]'
               "
             >
@@ -135,7 +135,7 @@ const material = {
           >
             <!-- Icon -->
             <div
-              class="flex h-16 w-16 items-center justify-center rounded-full bg-[#EF4B1A]"
+              class="flex h-16 w-16 items-center justify-center rounded-full bg-[#6b5f51]"
             >
               <Icon
                 name="lucide:layers"
@@ -147,7 +147,7 @@ const material = {
 
             <!-- Title -->
             <h3
-              class="mt-8 font-primary text-[28px] font-extrabold leading-[1.05] text-[#EF4B1A] sm:text-[32px]"
+              class="mt-8 font-primary text-[28px] font-extrabold leading-[1.05] text-[#6b5f51] sm:text-[32px]"
             >
               {{ material.title }}
               <br />
@@ -164,7 +164,7 @@ const material = {
             <!-- Button -->
             <button
               type="button"
-              class="mt-7 inline-flex items-center gap-2 rounded-[8px] bg-[#EF4B1A] px-6 py-3 font-primary text-[15px] font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#D94114]"
+              class="mt-7 inline-flex items-center gap-2 rounded-[8px] bg-[#6b5f51] px-6 py-3 font-primary text-[15px] font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#D94114]"
             >
               Check more
 

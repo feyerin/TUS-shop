@@ -2,8 +2,11 @@
 import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
-import { useBrandApi } from '~/composables/useBrandApi'
 import type { Product } from '~/type/product'
+
+useHead({
+  title: 'Collections - Sales'
+})
 
 const route = useRoute()
 const { getProducts } = useProductApi();

@@ -41,7 +41,7 @@ const collectionOptions = [
       <!-- Left Content -->
       <div class="max-w-[620px]">
         <p
-          class="mb-5 font-primary text-[20px] font-bold leading-tight text-[#EF4B1A] sm:text-[22px]"
+          class="mb-5 font-primary text-[20px] font-bold leading-tight text-[#6b5f51] sm:text-[22px]"
         >
           Services
         </p>
@@ -65,7 +65,7 @@ const collectionOptions = [
               class="flex items-center gap-4"
             >
               <span
-                class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#EF4B1A]"
+                class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#6b5f51]"
               >
                 <Icon
                   name="lucide:check"

@@ -76,6 +76,10 @@ const loadMore = () => {
   if (loading.value || !hasMore.value) return
   page.value++
 }
+
+useHead({
+  title: `Brand - ${category.value}`
+})
 </script>
 
 <template>
@@ -120,7 +124,10 @@ const loadMore = () => {
     </div>
 
     <!-- GRID -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
+    <div
+      v-if="products.length > 0"
+      class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4"
+    >
       <SectionsProductsCard
         v-for="p in products"
         :key="p.id"
@@ -131,6 +138,25 @@ const loadMore = () => {
         :brand="p.brandName"
         :soldOut="p.status === 'OUT_OF_STOCK'"
       />
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div
+      v-else-if="!loading"
+      class="flex flex-col items-center justify-center py-20 md:py-28 text-center"
+    >
+      <Icon
+        name="heroicons:shopping-bag"
+        class="w-10 h-10 text-gray-300 mb-4"
+      />
+
+      <h3 class="text-base md:text-lg font-medium text-gray-900">
+        No products found
+      </h3>
+
+      <p class="text-sm text-gray-500 mt-2">
+        There are no products available in this category.
+      </p>
     </div>
 
     <!-- LOAD MORE -->

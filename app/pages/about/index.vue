@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 
+  useHead({
+    title: 'About - The Underwear Supply'
+  })
 const loaded = ref(false)
 
 onMounted(() => {

@@ -5,6 +5,10 @@ import { useSocialMediaApi } from '~/composables/useSocialMediaApi'
 import type { ContactData } from '~/type/contact'
 import type { SocialMediaData } from '~/type/socialMedia'
 
+useHead({
+  title: 'Contact - The Underwear Supply'
+})
+
 // FORM
 const form = reactive({
   name: '',

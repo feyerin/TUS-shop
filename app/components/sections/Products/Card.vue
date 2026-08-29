@@ -55,7 +55,7 @@ const formatPrice = (price: number) => {
           {{ name }}
         </h3>
 
-        <p class="text-xs md:text-sm text-gray-700">
+        <p v-if="price" class="text-xs md:text-sm text-gray-700">
           {{ formatPrice(price) }}
         </p>
       </div>

@@ -1,31 +1,11 @@
 <script setup lang="ts">
-const slides = [
-  {
-    title: "",
-    image:
-      "https://loveandflair.com/cdn/shop/files/Banner_WEB_01580e15-31d8-4760-9cf0-e3b0a52ddb3b.jpg?v=1776983430&width=3000"
-  },
-  {
-    title: "",
-    image:
-      "https://loveandflair.com/cdn/shop/files/Banner_WEB_e1654985-6680-4d4f-8b49-10dc49d9a281.png?v=1775106692&width=3000"
-  },
-  {
-    title: "",
-    image:
-      "https://loveandflair.com/cdn/shop/files/Banner_WEB_5e801fdc-0d5d-475b-a7db-7f44160e7ca6.png?v=1772611660&width=3000"
-  },
-  {
-    title: "",
-    image:
-      "https://loveandflair.com/cdn/shop/files/Banner_WEB_d61cb1ea-8403-4095-b601-926fe7e143ff.png?v=1771554406&width=3000"
-  }
-]
+
+useHead({
+  title: 'Home - The Underwear Supply'
+})
 
 const {
-  dynamicSections,
-  pending,
-  error
+  dynamicSections
 } = await useDynamicSections()
 
 const heroBanner = computed(() =>
@@ -79,8 +59,6 @@ const collectionSection2 = computed(() =>
         :buttonLink="collectionSection?.content.buttonLink"
       />
 
-      <SectionsHomeEditorialProductGrid />
-
       <SectionsHomeFeaturedCategories />
 
       <SectionsHomeEditorialBanner
@@ -90,6 +68,10 @@ const collectionSection2 = computed(() =>
         :buttonText="collectionSection2?.content.buttonText"
         :buttonLink="collectionSection2?.content.buttonLink"
       />
+
+      <SectionsOEMSection4 />
+
+      <SectionsOEMSection7 />
     </div>
   </div>
 </template>

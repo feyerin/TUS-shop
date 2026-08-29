@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, watch } from 'vue'
 
 import type { Product } from '~/type/product'
 
-const route = useRoute()
+useHead({
+  title: `Collections - New In`
+})
+
 const { getProducts } = useProductApi()
 
 const page = ref(1)

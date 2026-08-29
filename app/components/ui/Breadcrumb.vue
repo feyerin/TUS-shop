@@ -27,6 +27,8 @@ function formatLabel(str: string) {
     .replace(/-/g, " ")
     .replace(/\b\w/g, l => l.toUpperCase())
 }
+
+console.log(breadcrumbs)
 </script>
 
 <template>
@@ -35,7 +37,6 @@ function formatLabel(str: string) {
       
       <NuxtLink
         v-if="i !== breadcrumbs.length - 1"
-        :to="item.to"
         class="hover:text-black transition"
       >
         {{ item.label }}

@@ -246,12 +246,12 @@ const toggleMobileMenu = (
         <div
           class="hidden md:flex items-center gap-6"
         >
-          <NuxtLink
+          <!-- <NuxtLink
             to="/account/login"
             class="hover:opacity-60"
           >
             LOGIN
-          </NuxtLink>
+          </NuxtLink> -->
 
           <NuxtLink
             to="/oem"
@@ -274,12 +274,12 @@ const toggleMobileMenu = (
             CONTACT
           </NuxtLink>
 
-          <NuxtLink to="/account/login">
+          <!-- <NuxtLink to="/account/login">
             <Icon
               name="heroicons:user"
               class="w-5 h-5"
             />
-          </NuxtLink>
+          </NuxtLink> -->
         </div>
 
         <!-- MOBILE -->

@@ -54,12 +54,12 @@ const collection = {
             class="mt-5 font-primary text-[21px] font-medium leading-[1.45] text-[#181818] sm:text-[23px]"
           >
             for
-            <span class="font-bold text-[#EF4B1A]">women</span>,
-            <span class="font-bold text-[#EF4B1A]">men</span>,
-            <span class="font-bold text-[#EF4B1A]">girls</span>,
-            <span class="font-bold text-[#EF4B1A]">boys</span>,
+            <span class="font-bold text-[#6b5f51]">women</span>,
+            <span class="font-bold text-[#6b5f51]">men</span>,
+            <span class="font-bold text-[#6b5f51]">girls</span>,
+            <span class="font-bold text-[#6b5f51]">boys</span>,
             and
-            <span class="font-bold text-[#EF4B1A]">babies!</span>
+            <span class="font-bold text-[#6b5f51]">babies!</span>
           </p>
 
           <!-- Description -->

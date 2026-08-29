@@ -1,19 +1,43 @@
 <script setup lang="ts">
-import { ref, computed, watchEffect } from "vue"
-import { useRoute } from "vue-router"
-import { products } from "../../../data/products"
-import { useProductApi } from "~/composables/useProductApi"
+import { computed, ref, watchEffect } from 'vue'
+import { useRoute } from 'vue-router'
+import { useProductApi } from '~/composables/useProductApi'
+
+// ================= STATE =================
 
 const route = useRoute()
 const slug = route.params.slug as string
 
-const { data: response, pending } = await useAsyncData(`product-${slug}`, () => useProductApi().getProduct(slug))
+const productApi = useProductApi()
+
+const activeImage = ref('')
+const activeAccordion = ref<string | null>(null)
+
+// ================= API =================
+
+const { data: response, pending } = await useAsyncData(
+  `product-${slug}`,
+  () => productApi.getProduct(slug)
+)
+
+const { data: productsResponse } = await useAsyncData(
+  `related-products-${slug}`,
+  () => productApi.getProducts()
+)
+
+// ================= COMPUTED =================
 
 const product = computed(() => response.value?.data?.product)
 
+const relatedProducts = computed(() =>
+  (productsResponse.value?.data?.products || []).slice(0, 8)
+)
+
 const decodedDescription = computed(() => {
-  let desc = product.value?.description || 'No description available.'
-  return desc
+  const description =
+    product.value?.description || 'No description available.'
+
+  return description
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
     .replace(/&amp;/g, '&')
@@ -23,43 +47,62 @@ const decodedDescription = computed(() => {
 })
 
 const colors = computed(() => {
-  if (product.value?.colors && product.value.colors.length > 0) {
+  if (product.value?.colors?.length) {
     return product.value.colors
   }
+
   const options = response.value?.data?.colorsOption
-  if (options) {
-    return Object.values(options).map((opt: any) => ({
-      color: opt.color,
-      colorHexCode: opt.colorHexCode || opt.color
-    }))
+
+  if (!options) {
+    return []
   }
-  return []
+
+  return Object.values(options).map((option: any) => ({
+    color: option.color,
+    colorHexCode: option.colorHexCode || option.color,
+  }))
 })
 
 const imagesUrl = computed(() => {
-  if (!product.value) return []
-  return (product.value.coverImages || [])
+  const coverImages = product.value?.coverImages
+
+  if (!coverImages?.length) {
+    return []
+  }
+
+  return [...coverImages]
     .sort((a, b) => a.order - b.order)
-    .map(img => img.imageUrl)
+    .map((image) => image.imageUrl)
 })
 
-const activeImage = ref('')
+// ================= WATCH =================
+
 watchEffect(() => {
-  if (imagesUrl.value.length && !activeImage.value) {
-    activeImage.value = imagesUrl.value[0]
+  const firstImage = imagesUrl.value[0]
+
+  if (firstImage && !activeImage.value) {
+    activeImage.value = firstImage
   }
 })
 
-const qty = ref(1)
-const activeAccordion = ref<string | null>(null)
+// ================= METHODS =================
 
 const toggle = (key: string) => {
   activeAccordion.value =
     activeAccordion.value === key ? null : key
 }
 
-const formatPrice = (p: number) =>
-  "IDR " + p.toLocaleString("id-ID")
+const formatPrice = (price?: number) => {
+  if (price == null) {
+    return ''
+  }
+
+  return `IDR ${price.toLocaleString('id-ID')}`
+}
+
+useHead({
+  title: `${product.value?.name} - ${product.value?.brandName}`
+})
 </script>
 
 <template>
@@ -232,11 +275,16 @@ const formatPrice = (p: number) =>
         </h2>
       </div>
 
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div class="grid grid-cols-2 gap-6 md:grid-cols-4">
         <SectionsProductsCard
-          v-for="p in products"
+          v-for="p in relatedProducts"
           :key="p.id"
-          v-bind="p"
+          :name="p.name"
+          :slug="p.slug"
+          :price="p.finalPrice"
+          :imageUrl="p.imageUrl"
+          :brand="p.brandName"
+          :soldOut="p.status === 'OUT_OF_STOCK'"
         />
       </div>
     </div>
