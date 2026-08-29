@@ -254,6 +254,13 @@ const toggleMobileMenu = (
           </NuxtLink>
 
           <NuxtLink
+            to="/oem"
+            class="hover:opacity-60"
+          >
+            OEM/ODM
+          </NuxtLink>
+
+          <NuxtLink
             to="/about"
             class="hover:opacity-60"
           >

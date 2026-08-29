@@ -43,8 +43,6 @@ interface DynamicSectionResponse {
 export const useDynamicSections = async () => {
   const config = useRuntimeConfig()
 
-  console.log(config)
-
   const { data, pending, error, refresh } =
     await useFetch<DynamicSectionResponse>(
       `${config.public.apiBase}/api/v1/public/dynamic-section`,

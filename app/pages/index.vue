@@ -58,7 +58,6 @@ const collectionSection2 = computed(() =>
   )
 )
 
-console.log(dynamicSections.value)
 </script>
 
 <template>
