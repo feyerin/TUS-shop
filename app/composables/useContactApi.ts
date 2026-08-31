@@ -1,15 +1,36 @@
 import type { ContactResponse } from '~/type/contact'
 
-export const useContactApi = () => {
+export const useBusinessContact = () => {
   const config = useRuntimeConfig()
 
-  const getContact = async (): Promise<ContactResponse> => {
-    return await $fetch('/api/v1/public/contact', {
-      baseURL: config.public.apiBase
-    })
+  const contact = useState<ContactResponse | null>(
+    'business-contact',
+    () => null
+  )
+
+  const isFetched = useState(
+    'business-contact-fetched',
+    () => false
+  )
+
+  const getContact = async () => {
+    if (isFetched.value) return contact.value
+
+    const data = await $fetch<ContactResponse>(
+      '/api/v1/public/contact',
+      {
+        baseURL: config.public.apiBase,
+      }
+    )
+
+    contact.value = data
+    isFetched.value = true
+
+    return data
   }
 
   return {
-    getContact
+    contact,
+    getContact,
   }
 }

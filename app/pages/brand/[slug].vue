@@ -19,8 +19,6 @@ const sort = ref('-created_at')
 const sortOptions = [
   { label: 'Newest', value: '-created_at' },
   { label: 'Oldest', value: 'created_at' },
-  { label: 'Lowest Price', value: 'finalPrice' },
-  { label: 'Highest Price', value: '-finalPrice' }
 ]
 
 const products = ref<Product[]>([])

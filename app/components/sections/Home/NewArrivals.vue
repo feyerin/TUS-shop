@@ -92,9 +92,11 @@ watch(
       </h2>
 
       <div class="flex items-center gap-4">
-        <button class="text-xs tracking-widest hover:opacity-60">
+        <NuxtLink
+          to="/new"
+         class="text-xs tracking-widest hover:opacity-60">
           VIEW ALL
-        </button>
+        </NuxtLink>
 
         <div class="flex gap-2">
           <button

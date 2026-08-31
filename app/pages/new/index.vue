@@ -24,14 +24,6 @@ const sortOptions = [
   {
     label: 'Oldest',
     value: 'created_at'
-  },
-  {
-    label: 'Lowest Price',
-    value: 'finalPrice'
-  },
-  {
-    label: 'Highest Price',
-    value: '-finalPrice'
   }
 ]
 

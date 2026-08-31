@@ -69,9 +69,7 @@ const collectionSection2 = computed(() =>
         :buttonLink="collectionSection2?.content.buttonLink"
       />
 
-      <SectionsOEMSection4 />
-
-      <SectionsOEMSection7 />
+      <SectionsHomeOEM />
     </div>
   </div>
 </template>

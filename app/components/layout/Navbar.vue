@@ -231,12 +231,7 @@ const toggleMobileMenu = (
 
       <!-- LOGO -->
       <div class="flex justify-center">
-        <NuxtLink to="/">
-          <img
-            src="/image/logo/tus.PNG"
-            class="h-5 md:h-6"
-          >
-        </NuxtLink>
+
       </div>
 
       <!-- RIGHT -->
@@ -253,25 +248,11 @@ const toggleMobileMenu = (
             LOGIN
           </NuxtLink> -->
 
-          <NuxtLink
-            to="/oem"
-            class="hover:opacity-60"
-          >
-            OEM/ODM
-          </NuxtLink>
-
-          <NuxtLink
-            to="/about"
-            class="hover:opacity-60"
-          >
-            ABOUT
-          </NuxtLink>
-
-          <NuxtLink
-            to="/contact"
-            class="hover:opacity-60"
-          >
-            CONTACT
+          <NuxtLink to="/">
+            <img
+              src="/image/logo/tus.PNG"
+              class="h-5 md:h-6"
+            >
           </NuxtLink>
 
           <!-- <NuxtLink to="/account/login">
@@ -286,13 +267,11 @@ const toggleMobileMenu = (
         <div
           class="flex md:hidden items-center gap-4"
         >
-          <NuxtLink
-            to="/account/login"
-          >
-            <Icon
-              name="heroicons:user"
-              class="w-5 h-5"
-            />
+          <NuxtLink to="/">
+            <img
+              src="/image/logo/tus.PNG"
+              class="h-5 md:h-6"
+            >
           </NuxtLink>
         </div>
       </div>

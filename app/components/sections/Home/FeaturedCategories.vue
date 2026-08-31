@@ -32,7 +32,7 @@ onMounted(() => {
       <NuxtLink
         v-for="(item, i) in brands"
         :key="item.id"
-        :to="`/brands/${item.slug}`"
+        :to="`/brand/${item.slug}`"
         class="group text-center relative px-4"
       >
         <!-- divider -->

@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref, onMounted } from 'vue'
-import { useContactApi } from '~/composables/useContactApi'
 import { useSocialMediaApi } from '~/composables/useSocialMediaApi'
-import type { ContactData } from '~/type/contact'
 import type { SocialMediaData } from '~/type/socialMedia'
 
 useHead({
@@ -16,10 +14,9 @@ const form = reactive({
 })
 
 // API
-const { getContact } = useContactApi()
+const { contact, getContact } = useBusinessContact()
 const { getSocialMedia } = useSocialMediaApi()
 
-const contact = ref<ContactData | null>(null)
 const social = ref<SocialMediaData | null>(null)
 
 const loading = ref(false)
@@ -33,7 +30,9 @@ const fetchData = async () => {
       getSocialMedia()
     ])
 
-    contact.value = contactRes.data
+    // contact dari useBusinessContact sudah reactive/shared
+    // jadi tidak perlu contact.value = ...
+    
     social.value = socialRes.data
   } catch (err) {
     console.error('Failed fetch contact/social', err)
@@ -53,7 +52,7 @@ const sendToWhatsApp = () => {
     return
   }
 
-  const phone = contact.value?.phone_number || '6281234567890'
+  const phone = contact.value?.data?.phone_number || '6281234567890'
 
   const text = `Hello, I would like to contact you.
 
@@ -63,7 +62,11 @@ Message:
 ${form.message}`
 
   const encoded = encodeURIComponent(text)
-  window.open(`https://wa.me/${phone}?text=${encoded}`, '_blank')
+
+  window.open(
+    `https://wa.me/${phone}?text=${encoded}`,
+    '_blank'
+  )
 
   Object.assign(form, {
     name: '',
@@ -97,10 +100,11 @@ ${form.message}`
 
         <!-- EMAIL -->
         <div class="flex items-start gap-4">
+
           <div class="icon">@</div>
           <div>
             <p class="label">EMAIL</p>
-            <p>{{ contact?.email }}</p>
+            <p>{{ contact?.data?.email }}</p>
           </div>
         </div>
 
@@ -109,7 +113,7 @@ ${form.message}`
           <div class="icon">☎</div>
           <div>
             <p class="label">PHONE</p>
-            <p>{{ contact?.phone_number }}</p>
+            <p>{{ contact?.data.phone_number }}</p>
           </div>
         </div>
 
@@ -118,7 +122,7 @@ ${form.message}`
           <div class="icon">📍</div>
           <div>
             <p class="label">STORE</p>
-            <p>{{ contact?.store }}</p>
+            <p>{{ contact?.data.store }}</p>
           </div>
         </div>
 
@@ -127,7 +131,7 @@ ${form.message}`
           <div class="icon">⏱</div>
           <div>
             <p class="label">HOURS</p>
-            <p>{{ contact?.hours }}</p>
+            <p>{{ contact?.data.hours }}</p>
           </div>
         </div>
 

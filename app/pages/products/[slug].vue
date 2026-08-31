@@ -204,12 +204,12 @@ useHead({
         </div>
 
         <!-- QTY -->
-        <div class="flex items-center gap-4">
+        <!-- <div class="flex items-center gap-4">
 
           <button class="flex-1 bg-black text-white py-3 text-sm hover:opacity-90 transition">
             ADD TO CART
           </button>
-        </div>
+        </div> -->
 
         <!-- ACCORDION -->
         <div class="border-t divide-y">
@@ -239,7 +239,7 @@ useHead({
           </div>
 
           <!-- ITEM -->
-          <div>
+          <!-- <div>
             <button
               @click="toggle('shipping')"
               class="w-full flex justify-between items-center py-4 text-sm"
@@ -260,7 +260,7 @@ useHead({
                 Ships within 2–4 working days.
               </div>
             </transition>
-          </div>
+          </div> -->
 
         </div>
 
