@@ -1,3 +1,4 @@
+```vue
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 
@@ -138,7 +139,10 @@ const loadMore = async () => {
     </div>
 
     <!-- GRID -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+    <div
+      v-if="products.length"
+      class="grid grid-cols-2 md:grid-cols-4 gap-2"
+    >
       <SectionsProductsCard
         v-for="p in products"
         :key="p.id"
@@ -151,10 +155,31 @@ const loadMore = async () => {
       />
     </div>
 
+    <!-- EMPTY STATE -->
+    <div
+      v-else-if="!loading && !error"
+      class="flex flex-col items-center justify-center py-20 md:py-28 text-center"
+    >
+      <Icon
+        name="heroicons:shopping-bag"
+        class="w-10 h-10 text-gray-300 mb-4"
+      />
+
+      <h3 class="text-base md:text-lg font-medium text-gray-900">
+        No products found
+      </h3>
+
+      <p class="text-sm text-gray-500 mt-2">
+        There are no products available at the moment.
+      </p>
+    </div>
+
     <!-- LOAD MORE -->
-    <div class="flex justify-center mt-12">
+    <div
+      v-if="products.length && hasMore"
+      class="flex justify-center mt-12"
+    >
       <button
-        v-if="hasMore"
         :disabled="loading"
         class="px-8 py-3 bg-black text-white text-sm tracking-widest hover:bg-gray-800 disabled:opacity-50 transition flex items-center justify-center min-w-[140px]"
         @click="loadMore"
@@ -179,3 +204,4 @@ const loadMore = async () => {
     </div>
   </section>
 </template>
+```
