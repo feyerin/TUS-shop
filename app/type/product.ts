@@ -76,6 +76,7 @@ export interface Product {
   discountValue: number;
   finalPrice: number;
   imageUrl: string;
+  hidePrice: boolean;
   name: string;
   seoTag: string;
   slug: string;

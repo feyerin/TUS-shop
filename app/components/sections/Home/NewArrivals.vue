@@ -29,6 +29,8 @@ const {
     orderBy: sort.value
   })
 
+  console.log(response.data)
+
   return response.data
 })
 
@@ -145,7 +147,7 @@ watch(
             {{ product.name }}
           </p>
 
-          <div class="flex items-center gap-2 mt-1">
+          <div v-if="!product.hidePrice" class="flex items-center gap-2 mt-1">
             <!-- FINAL PRICE -->
             <p class="text-gray-700">
               {{
@@ -162,10 +164,11 @@ watch(
               v-if="
                 product.discountValue > 0 &&
                 product.finalPrice > 0 &&
-                product.finalPrice !== product.basePrice
+                product.finalPrice !== product.basePrice 
               "
               class="text-xs text-gray-400 line-through"
             >
+            {{ !product.hidePrice }}
               {{ currency(product.basePrice) }}
             </p>
           </div>
@@ -241,7 +244,7 @@ watch(
               </h2>
 
               <!-- PRICE -->
-              <div class="flex items-center gap-3 my-4">
+              <div v-if="!selectedProduct.hidePrice" class="flex items-center gap-3 my-4">
                 <p class="text-xl text-gray-700 font-light">
                   {{
                     currency(
