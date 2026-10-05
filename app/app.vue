@@ -33,14 +33,18 @@ useHead({
 
       <template #fallback>
         <div
-          class="fixed inset-0 z-50 flex items-center justify-center bg-white/70 backdrop-blur"
+          class="fixed inset-0 z-50 flex items-center justify-center bg-white/90 backdrop-blur"
         >
-          <div class="flex flex-col items-center gap-3">
-            <div
-              class="h-10 w-10 animate-spin rounded-full border-4 border-gray-300 border-t-black"
-            ></div>
+          <div class="flex flex-col items-center">
+            <img
+              src="/image/logo/tus.PNG"
+              alt="The Underwear Supply"
+              class="w-[160px] animate-pulse object-contain sm:w-[190px]"
+            />
 
-            <p class="text-sm">Loading...</p>
+            <div class="mt-5 h-[2px] w-16 overflow-hidden bg-gray-200">
+              <div class="h-full w-1/2 animate-[loading_1.2s_ease-in-out_infinite] bg-[#171717]" />
+            </div>
           </div>
         </div>
       </template>
