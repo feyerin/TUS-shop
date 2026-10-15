@@ -5,6 +5,8 @@ await callOnce('business-contact', async () => {
   await getContact()
 })
 
+const { isLoading } = useLoadingIndicator()
+
 useHead({
   link: [
     {
@@ -26,31 +28,42 @@ useHead({
 
 <template>
   <NuxtLayout>
-    <Suspense>
-      <template #default>
-        <NuxtPage />
-      </template>
+    <NuxtPage />
 
-      <template #fallback>
-        <div
-          class="fixed inset-0 z-50 flex items-center justify-center bg-white/90 backdrop-blur"
-        >
-          <div class="flex flex-col items-center">
-            <img
-              src="/image/logo/tus.PNG"
-              alt="The Underwear Supply"
-              class="w-[160px] animate-pulse object-contain sm:w-[190px]"
-            />
+    <div
+      v-if="isLoading"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-white/90 backdrop-blur"
+    >
+      <div class="flex flex-col items-center">
+        <img
+          src="/image/logo/tus.PNG"
+          alt="The Underwear Supply"
+          class="w-[160px] animate-pulse object-contain sm:w-[190px]"
+        />
 
-            <div class="mt-5 h-[2px] w-16 overflow-hidden bg-gray-200">
-              <div class="h-full w-1/2 animate-[loading_1.2s_ease-in-out_infinite] bg-[#171717]" />
-            </div>
-          </div>
+        <div class="mt-5 h-[3px] w-16 overflow-hidden rounded-full bg-gray-200">
+          <div class="loading-progress h-full rounded-full bg-[#171717]" />
         </div>
-      </template>
-    </Suspense>
+      </div>
+    </div>
 
-    <!-- Floating WhatsApp tidak masuk Suspense -->
     <UiFloatingWhatsapp />
   </NuxtLayout>
 </template>
+
+<style scoped>
+.loading-progress {
+  width: 40%;
+  animation: loading-progress 1.2s ease-in-out infinite;
+}
+
+@keyframes loading-progress {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(250%);
+  }
+}
+</style>

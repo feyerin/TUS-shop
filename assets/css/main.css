@@ -21,6 +21,28 @@ body {
 .slide-enter-active {
   transition: transform 0.3s ease;
 }
+
 .slide-enter-from {
   transform: translateX(-100%);
+}
+
+@keyframes progress {
+  0% {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  50% {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  50.01% {
+    transform-origin: right;
+  }
+
+  100% {
+    transform: scaleX(0);
+    transform-origin: right;
+  }
 }
