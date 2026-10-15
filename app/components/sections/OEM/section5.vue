@@ -1,54 +1,22 @@
 <script setup lang="ts">
-interface ClothingType {
-  title: string;
-  subtitle: string;
-  image: string;
-}
-
-const clothingTypes: ClothingType[] = [
-  {
-    title: "Women's Wear",
-    subtitle: "Dresses, tops, skirts, activewear, and more.",
-    image: "/image/bg/women.jpg",
-  },
-  {
-    title: "Men's Wear",
-    subtitle: "T-shirts, shirts, trousers, jackets, and more.",
-    image: "/image/bg/men.jpg",
-  },
-  {
-    title: "Girls' Wear",
-    subtitle: "Fashionable and comfortable clothing for girls.",
-    image: "/image/bg/girls.jpg",
-  },
-  {
-    title: "Boys' Wear",
-    subtitle: "Everyday styles made for active boys.",
-    image: "/image/bg/boys.jpg",
-  },
-  {
-    title: "Baby Wear",
-    subtitle: "Soft, comfortable clothing for little ones.",
-    image: "/image/bg/baby.jpg",
-  },
-  {
-    title: "Sportswear",
-    subtitle: "Performance-focused styles for active lifestyles.",
-    image: "/image/bg/sportswear.jpg",
-  },
-  {
-    title: "Swimwear",
-    subtitle: "Custom swimwear designed for your collection.",
-    image: "/image/bg/swimwear.jpg",
-  },
-  {
-    title: "Loungewear",
-    subtitle: "Comfortable essentials made for everyday living.",
-    image: "/image/bg/loungewear.jpg",
-  },
-];
-
 let animationContext: gsap.Context | null = null;
+const expandedCards = ref<number[]>([]);
+
+const {
+  dynamicSections
+} = await useDynamicSections()
+
+const OEMProduct = computed(() =>
+  dynamicSections.value.find(
+    section => section.sectionKey === "oem"
+  )
+)
+
+const toggleDescription = (index: number) => {
+  expandedCards.value = expandedCards.value.includes(index)
+    ? expandedCards.value.filter((item) => item !== index)
+    : [...expandedCards.value, index];
+};
 
 onMounted(async () => {
   const { gsap } = await import("gsap");
@@ -204,15 +172,13 @@ onUnmounted(() => {
         <p
           class="clothing-types-eyebrow mb-5 font-secondary text-[20px] font-bold leading-tight text-[#89A79D] sm:text-[22px]"
         >
-          OEM Clothing Production
+          {{ OEMProduct?.title }}
         </p>
 
         <h2
           class="clothing-types-title font-primary text-[42px] font-extrabold leading-[1.02] tracking-[-0.04em] text-[#181818] sm:text-[50px] lg:text-[58px]"
         >
-          What can we manufacture
-          <br class="hidden sm:block" />
-          for your brand?
+          {{ OEMProduct?.subtitle }}
         </h2>
 
         <p
@@ -228,15 +194,15 @@ onUnmounted(() => {
         class="clothing-types-grid grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
       >
         <article
-          v-for="clothing in clothingTypes"
-          :key="clothing.title"
+          v-for="(clothing, index) in OEMProduct?.content"
+          :key="`${clothing.productName}-${index}`"
           class="clothing-type-card group relative overflow-hidden rounded-[18px] bg-white opacity-0"
         >
           <!-- Image -->
           <div class="relative aspect-[0.78] overflow-hidden">
             <img
               :src="clothing.image"
-              :alt="clothing.title"
+              :alt="clothing.productName"
               class="clothing-type-image h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
             />
 
@@ -252,25 +218,40 @@ onUnmounted(() => {
               <h3
                 class="font-primary text-[25px] font-extrabold leading-tight tracking-[-0.02em]"
               >
-                {{ clothing.title }}
+                {{ clothing.productName }}
               </h3>
 
               <p
-                class="mt-2 max-w-[260px] font-primary text-[14px] leading-[1.5] text-white/85 sm:text-[15px]"
+                class="mt-2 max-w-[260px] font-primary text-[14px] leading-[1.5] text-white/85 transition-all duration-300 sm:text-[15px]"
+                :class="{
+                  'line-clamp-2': !expandedCards.includes(clothing.productName),
+                }"
               >
-                {{ clothing.subtitle }}
+                {{ clothing.description }}
               </p>
 
               <!-- Arrow -->
-              <div
-                class="mt-5 flex h-9 w-9 items-center justify-center rounded-full border border-white/50 transition-all duration-300 group-hover:translate-x-1 group-hover:bg-white group-hover:text-[#181818]"
+              <button
+                type="button"
+                class="mt-5 flex h-9 w-9 items-center justify-center rounded-full border border-white/50 transition-all duration-300 hover:translate-x-1 hover:bg-white hover:text-[#181818]"
+                :aria-expanded="expandedCards.includes(clothing.productName)"
+                :aria-label="
+                  expandedCards.includes(clothing.productName)
+                    ? 'Show less description'
+                    : 'Show full description'
+                "
+                @click="toggleDescription(clothing.productName)"
               >
                 <Icon
                   name="lucide:arrow-up-right"
                   size="17"
                   :stroke-width="1.8"
+                  class="transition-transform duration-300"
+                  :class="{
+                    'rotate-180': expandedCards.includes(clothing.productName),
+                  }"
                 />
-              </div>
+              </button>
             </div>
           </div>
         </article>
