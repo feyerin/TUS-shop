@@ -26,7 +26,7 @@ const businessOptions: BusinessOption[] = [
   {
     type: 'ODM',
     eyebrow: 'READY TO BUILD',
-    title: 'ODM',
+    title: 'ODM/Reseller',
     description:
       'Explore our curated product collection and build your business with ready-to-sell styles from our marketplace.',
     features: [
