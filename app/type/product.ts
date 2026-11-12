@@ -83,6 +83,8 @@ export interface Product {
   status: string;
   links: Link[];
   sizes: string[];
+  unit: string;
+
 
   createdAt: string;
   createdBy: string;

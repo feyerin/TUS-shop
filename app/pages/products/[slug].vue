@@ -75,6 +75,29 @@ const imagesUrl = computed(() => {
     .map((image) => image.imageUrl)
 })
 
+// ================= MARKETPLACE LINKS =================
+
+const marketplaceNames: Record<string, string> = {
+  tokopedia: 'Tokopedia',
+  shopee: 'Shopee',
+  tiktok: 'TikTok Shop',
+  lazada: 'Lazada',
+  blibli: 'Blibli'
+}
+
+const marketplaceLinks = computed(() =>
+  (product.value?.links || [])
+    .filter((link: any) => link.url)
+    .map((link: any) => ({
+      id: link.id || link.url,
+      url: link.url,
+      name:
+        marketplaceNames[String(link.linkType || '').toLowerCase()] ||
+        link.label ||
+        'Marketplace'
+    }))
+)
+
 // ================= WATCH =================
 
 watchEffect(() => {
@@ -163,11 +186,20 @@ useHead({
             {{ product.brandName }}
           </p>
 
-          <div class="mt-4 flex items-center gap-3 text-[20px]">
+          <!-- PRICE (disembunyikan kalau hidePrice aktif) -->
+          <div
+            v-if="!product.hidePrice"
+            class="mt-4 flex items-baseline gap-3 text-[20px]"
+          >
             <span v-if="product.discountValue > 0" class="line-through text-gray-400 text-base">
               {{ formatPrice(product.basePrice) }}
             </span>
-            <span>{{ formatPrice(product.finalPrice) }}</span>
+            <span>
+              {{ formatPrice(product.finalPrice) }}
+              <span v-if="product.unit" class="text-sm text-gray-500">
+                {{ product.unit }}
+              </span>
+            </span>
           </div>
         </div>
 
@@ -203,13 +235,24 @@ useHead({
           <div v-else class="w-6 h-6 border rounded-full bg-gray-200"></div>
         </div>
 
-        <!-- QTY -->
-        <!-- <div class="flex items-center gap-4">
+        <!-- MARKETPLACE LINKS -->
+        <div v-if="marketplaceLinks.length">
+          <p class="text-sm mb-2">Buy at</p>
 
-          <button class="flex-1 bg-black text-white py-3 text-sm hover:opacity-90 transition">
-            ADD TO CART
-          </button>
-        </div> -->
+          <div class="flex flex-col gap-3">
+            <a
+              v-for="link in marketplaceLinks"
+              :key="link.id"
+              :href="link.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center justify-center gap-2 py-3 text-sm uppercase tracking-wide bg-black text-white hover:opacity-90 transition"
+            >
+              Buy on {{ link.name }}
+              <Icon name="heroicons:arrow-top-right-on-square" class="w-4 h-4" />
+            </a>
+          </div>
+        </div>
 
         <!-- ACCORDION -->
         <div class="border-t divide-y">
@@ -237,30 +280,6 @@ useHead({
               </div>
             </transition>
           </div>
-
-          <!-- ITEM -->
-          <!-- <div>
-            <button
-              @click="toggle('shipping')"
-              class="w-full flex justify-between items-center py-4 text-sm"
-            >
-              <span>Shipping</span>
-              <Icon
-                name="heroicons:chevron-down"
-                class="w-4 h-4 transition-transform duration-200"
-                :class="{ 'rotate-180': activeAccordion === 'shipping' }"
-              />
-            </button>
-
-            <transition name="accordion">
-              <div
-                v-show="activeAccordion === 'shipping'"
-                class="pb-4 text-sm text-gray-600"
-              >
-                Ships within 2–4 working days.
-              </div>
-            </transition>
-          </div> -->
 
         </div>
 

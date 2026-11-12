@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from "vue"
+import { computed, ref, watch } from "vue"
 import type { Product } from "~/type/product"
 
 const { getProducts, getProduct } = useProductApi()
@@ -29,10 +29,33 @@ const {
     orderBy: sort.value
   })
 
-  console.log(response.data)
-
   return response.data
 })
+
+// ================= MARKETPLACE LINKS =================
+
+const marketplaceNames: Record<string, string> = {
+  tokopedia: "Tokopedia",
+  shopee: "Shopee",
+  tiktok: "TikTok Shop",
+  lazada: "Lazada",
+  blibli: "Blibli"
+}
+
+const quickViewLinks = computed(() =>
+  (selectedProduct.value?.links || [])
+    .filter((link: any) => link.url)
+    .map((link: any) => ({
+      id: link.id || link.url,
+      url: link.url,
+      name:
+        marketplaceNames[String(link.linkType || "").toLowerCase()] ||
+        link.label ||
+        "Marketplace"
+    }))
+)
+
+// ================= METHODS =================
 
 const scrollLeft = () => {
   slider.value?.scrollBy({
@@ -147,8 +170,8 @@ watch(
             {{ product.name }}
           </p>
 
-          <div v-if="!product.hidePrice" class="flex items-center gap-2 mt-1">
-            <!-- FINAL PRICE -->
+          <div v-if="!product.hidePrice" class="flex items-baseline gap-2 mt-1">
+            <!-- FINAL PRICE + UNIT -->
             <p class="text-gray-700">
               {{
                 currency(
@@ -157,6 +180,9 @@ watch(
                     : product.basePrice
                 )
               }}
+              <span v-if="product.unit" class="text-xs text-gray-500">
+                {{ product.unit }}
+              </span>
             </p>
 
             <!-- BASE PRICE -->
@@ -168,7 +194,6 @@ watch(
               "
               class="text-xs text-gray-400 line-through"
             >
-            {{ !product.hidePrice }}
               {{ currency(product.basePrice) }}
             </p>
           </div>
@@ -244,7 +269,7 @@ watch(
               </h2>
 
               <!-- PRICE -->
-              <div v-if="!selectedProduct.hidePrice" class="flex items-center gap-3 my-4">
+              <div v-if="!selectedProduct.hidePrice" class="flex items-baseline gap-3 my-4">
                 <p class="text-xl text-gray-700 font-light">
                   {{
                     currency(
@@ -252,6 +277,9 @@ watch(
                       selectedProduct.basePrice
                     )
                   }}
+                  <span v-if="selectedProduct.unit" class="text-sm text-gray-500">
+                    {{ selectedProduct.unit }}
+                  </span>
                 </p>
 
                 <p
@@ -342,16 +370,17 @@ watch(
                 </p>
               </div>
 
-              <!-- CTA -->
+              <!-- CTA: MARKETPLACE LINKS -->
               <div class="space-y-3">
                 <a
-                  v-for="link in selectedProduct.links"
+                  v-for="link in quickViewLinks"
                   :key="link.id"
                   :href="link.url"
                   target="_blank"
+                  rel="noopener noreferrer"
                   class="block w-full bg-black text-white py-4 text-sm tracking-[0.2em] text-center uppercase hover:opacity-80 transition"
                 >
-                  Buy
+                  Buy on {{ link.name }}
                 </a>
               </div>
             </div>
