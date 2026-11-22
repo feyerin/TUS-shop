@@ -1,14 +1,21 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue"
 
+type Slide =
+  | string
+  | {
+      desktop: string
+      mobile: string
+    }
+
 const props = defineProps<{
-  slides: string
+  slides: Slide[]
 }>()
 
 const current = ref(0)
 const direction = ref<"next" | "prev">("next")
 
-let interval: any = null
+let interval: ReturnType<typeof setInterval> | null = null
 
 const nextSlide = () => {
   direction.value = "next"
@@ -21,9 +28,14 @@ const prevSlide = () => {
     (current.value - 1 + props.slides.length) % props.slides.length
 }
 
+const getDesktop = (slide: Slide) =>
+  typeof slide === "string" ? slide : slide.desktop
+
+const getMobile = (slide: Slide) =>
+  typeof slide === "string" ? slide : slide.mobile
+
 // SWIPE SUPPORT
 let startX = 0
-
 let startY = 0
 
 const onTouchStart = (e: TouchEvent) => {
@@ -35,13 +47,9 @@ const onTouchStart = (e: TouchEvent) => {
 const onTouchEnd = (e: TouchEvent) => {
   if (!e.changedTouches.length) return
 
-  const endX = e.changedTouches[0]!.clientX
-  const endY = e.changedTouches[0]!.clientY
+  const diffX = startX - e.changedTouches[0]!.clientX
+  const diffY = startY - e.changedTouches[0]!.clientY
 
-  const diffX = startX - endX
-  const diffY = startY - endY
-
-  // ignore kalau scroll vertical lebih dominan
   if (Math.abs(diffY) > Math.abs(diffX)) return
 
   if (diffX > 50) nextSlide()
@@ -53,25 +61,25 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  clearInterval(interval)
+  if (interval) clearInterval(interval)
 })
 </script>
 
 <template>
   <section
-    class="relative w-full overflow-hidden
-           h-[75vh] md:h-screen"
+    class="mt-14 md:mt-14 relative w-full overflow-hidden bg-black"
     @touchstart="onTouchStart"
     @touchend="onTouchEnd"
   >
 
-    <!-- SLIDES -->
-    <div class="relative h-full w-full">
+    <!-- SLIDES: ditumpuk di 1 sel grid, tinggi ikut gambar -->
+    <div class="grid w-full">
 
       <div
         v-for="(slide, i) in slides"
         :key="i"
-        class="absolute inset-0 transition-all duration-[900ms] ease-[cubic-bezier(0.65,0,0.35,1)]"
+        class="relative col-start-1 row-start-1
+               transition-all duration-[900ms] ease-[cubic-bezier(0.65,0,0.35,1)]"
         :class="[
           i === current
             ? 'translate-x-0 opacity-100 z-10'
@@ -81,13 +89,21 @@ onUnmounted(() => {
         ]"
       >
         <!-- IMAGE -->
-        <img
-          :src="slide"
-          class="w-full h-full object-cover"
-        />
+        <picture class="block w-full">
+          <source
+            media="(min-width: 768px)"
+            :srcset="getDesktop(slide)"
+          />
+          <img
+            :src="getMobile(slide)"
+            :alt="`Slide ${i + 1}`"
+            :loading="i === 0 ? 'eager' : 'lazy'"
+            class="block w-full h-auto"
+          />
+        </picture>
 
         <!-- OVERLAY -->
-        <div class="absolute inset-0 bg-black/20"></div>
+        <div class="absolute inset-0 bg-black/20 pointer-events-none"></div>
       </div>
 
     </div>
@@ -95,7 +111,8 @@ onUnmounted(() => {
     <!-- ARROWS -->
     <button
       @click="prevSlide"
-      class="absolute left-3 md:left-6 top-1/2 -translate-y-1/2
+      aria-label="Previous slide"
+      class="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 z-20
              text-white text-2xl md:text-3xl
              bg-black/20 md:bg-transparent
              w-8 h-8 md:w-auto md:h-auto
@@ -109,7 +126,8 @@ onUnmounted(() => {
 
     <button
       @click="nextSlide"
-      class="absolute right-3 md:right-6 top-1/2 -translate-y-1/2
+      aria-label="Next slide"
+      class="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-20
              text-white text-2xl md:text-3xl
              bg-black/20 md:bg-transparent
              w-8 h-8 md:w-auto md:h-auto
@@ -122,11 +140,12 @@ onUnmounted(() => {
     </button>
 
     <!-- DOTS -->
-    <div class="absolute bottom-4 md:bottom-8 right-4 md:right-8 flex items-center gap-2">
+    <div class="absolute bottom-4 md:bottom-8 right-4 md:right-8 z-20 flex items-center gap-2">
       <button
         v-for="(_, i) in slides"
         :key="i"
         @click="current = i"
+        :aria-label="`Go to slide ${i + 1}`"
         :class="[
           'h-[2px] transition-all duration-300',
           current === i
