@@ -11,11 +11,6 @@ import type {
   CollectionResponse
 } from '~/type/collection'
 
-const route = useRoute()
-
-const { getCollections } = useCollectionApi()
-const { getBrands } = useBrandApi()
-
 interface MenuChild {
   name: string
   link: string
@@ -32,6 +27,13 @@ interface MenuItem {
   children?: MenuGroup[]
 }
 
+// ================= COMPOSABLES =================
+const route = useRoute()
+
+const { getCollections } = useCollectionApi()
+const { getBrands } = useBrandApi()
+
+// ================= STATE =================
 const collections = ref<Collection[]>([])
 const brands = ref<Brand[]>([])
 
@@ -41,61 +43,12 @@ const isOpen = ref(false)
 const activeMenu = ref<string | null>(null)
 const activeMobileMenu = ref<number | null>(null)
 
-const handleScroll = () => {
-  isScrolled.value = window.scrollY > 50
-}
-
-const fetchCollections = async () => {
-  try {
-    const res: CollectionResponse =
-      await getCollections()
-
-    collections.value =
-      res.data.collections ?? []
-  } catch (err) {
-    console.error(
-      'Failed fetch collections',
-      err
-    )
-  }
-}
-
-const fetchBrand = async () => {
-  try {
-    const res: BrandResponse =
-      await getBrands()
-
-    brands.value = res.data.brands ?? []
-  } catch (err) {
-    console.error(
-      'Failed fetch brand',
-      err
-    )
-  }
-}
-
-onMounted(() => {
-  window.addEventListener(
-    'scroll',
-    handleScroll
-  )
-
-  fetchCollections()
-  fetchBrand()
-})
-
-onUnmounted(() => {
-  window.removeEventListener(
-    'scroll',
-    handleScroll
-  )
-})
-
 const transparentRoutes = [
   '/',
   '/account/login'
 ]
 
+// ================= COMPUTED =================
 const isActive = computed(() => {
   const isTransparentPage =
     transparentRoutes.includes(
@@ -173,6 +126,49 @@ const activeItem = computed(() =>
   )
 )
 
+// ================= FUNCTIONS =================
+const handleScroll = () => {
+  isScrolled.value = window.scrollY > 50
+}
+
+const byRank = (
+  a: { rank?: number; name: string },
+  b: { rank?: number; name: string }
+) => (a.rank ?? 0) - (b.rank ?? 0) || a.name.localeCompare(b.name)
+
+const fetchCollections = async () => {
+  try {
+    const res: CollectionResponse =
+      await getCollections()
+
+    collections.value = (res.data.collections ?? [])
+      .map(collection => ({
+        ...collection,
+        categories: [...(collection.categories ?? [])].sort(byRank)
+      }))
+      .sort(byRank)
+  } catch (err) {
+    console.error(
+      'Failed fetch collections',
+      err
+    )
+  }
+}
+
+const fetchBrand = async () => {
+  try {
+    const res: BrandResponse =
+      await getBrands()
+
+    brands.value = res.data.brands ?? []
+  } catch (err) {
+    console.error(
+      'Failed fetch brand',
+      err
+    )
+  }
+}
+
 const toggleMobileMenu = (
   index: number
 ) => {
@@ -181,6 +177,24 @@ const toggleMobileMenu = (
       ? null
       : index
 }
+
+// ================= LIFECYCLE =================
+onMounted(() => {
+  window.addEventListener(
+    'scroll',
+    handleScroll
+  )
+
+  fetchCollections()
+  fetchBrand()
+})
+
+onUnmounted(() => {
+  window.removeEventListener(
+    'scroll',
+    handleScroll
+  )
+})
 </script>
 
 <template>
@@ -299,7 +313,7 @@ const toggleMobileMenu = (
               :class="
                 activeItem.name ===
                 'BRAND'
-                  ? 'col-span-9 grid grid-cols-3 gap-10'
+                  ? 'col-span-9'
                   : 'col-span-12 grid grid-cols-4 gap-10'
               "
             >
@@ -314,7 +328,14 @@ const toggleMobileMenu = (
                   {{ group.title }}
                 </h4>
 
-                <ul class="space-y-2">
+                <ul
+                  :class="
+                    activeItem.name ===
+                    'BRAND'
+                      ? 'grid grid-cols-2 gap-x-10 gap-y-2'
+                      : 'space-y-2'
+                  "
+                >
                   <li
                     v-for="child in group.items"
                     :key="child.name"
