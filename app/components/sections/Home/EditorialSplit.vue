@@ -25,11 +25,11 @@ const props = withDefaults(
       ]"
     >
       <!-- IMAGE -->
-      <div class="group overflow-hidden">
+      <div class="group overflow-hidden aspect-square">
         <img
           :src="image"
           :alt="title"
-          class="w-full h-[600px] object-cover transition duration-[4000ms] ease-out group-hover:scale-105"
+          class="w-full h-full object-cover transition duration-[4000ms] ease-out group-hover:scale-105"
         />
       </div>
 
