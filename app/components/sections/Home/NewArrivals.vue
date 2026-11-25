@@ -149,15 +149,16 @@ watch(
       <div
         v-for="product in products"
         :key="product.id"
-        class="min-w-[260px] group cursor-pointer"
+        class="w-[260px] shrink-0 group cursor-pointer"
       >
         <div
-          class="relative overflow-hidden"
+          class="relative overflow-hidden bg-gray-100"
           @click="openQuickView(product)"
         >
           <img
             :src="product.imageUrl"
-            class="w-full h-[360px] object-cover transition duration-700 group-hover:scale-105"
+            :alt="product.name"
+            class="w-full h-auto block transition duration-700 group-hover:scale-105"
           />
         </div>
 

@@ -23,7 +23,7 @@ const formatPrice = (price: number) => {
 </script>
 
 <template>
-  <NuxtLink :to="`/products/${slug}`">
+  <NuxtLink :to="`/products/${slug}`" class="block">
     <div class="group cursor-pointer">
       <!-- IMAGE -->
       <div class="relative overflow-hidden bg-gray-100 mb-3 md:mb-4">
@@ -38,7 +38,7 @@ const formatPrice = (price: number) => {
         <img
           :src="imageUrl"
           :alt="name"
-          class="w-full aspect-[3/4] object-cover transition duration-700 group-hover:scale-105"
+          class="w-full h-auto block transition duration-700"
         />
 
         <!-- HOVER -->
